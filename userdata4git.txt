@@ -1,0 +1,25 @@
+#! /bin/bash
+# comments
+# this is inital bootstrap userdata for ec2 to access codecommit
+# to be used to git additional startup scripts and bootstrapping
+#
+# The EC2 must have a role for CodeCommit access
+#
+# first install git
+yum install -y git
+#                     #
+# variable declration #
+#                     #
+region="us-west-2"
+repo="ClassC1"
+path="/home/ec2-user/$repo"
+username="TBrady"
+email="twb27@uw.edu"
+#
+# configure git for ec2-user to use the required instance role
+# role policy must inculed at least access to read from defined repo
+runuser -l ec2-user -c 'git config --global credential.helper '"'"'!aws codecommit credential-helper $@'"'"''
+runuser -l ec2-user -c 'git config --global credential.UseHttpPath true'
+runuser -l ec2-user -c 'git config --global user.name "'"$username"'"'
+runuser -l ec2-user -c 'git config --global user.email '"$email"''
+runuser -l ec2-user -c 'git clone https://git-codecommit.'"$region"'.amazonaws.com/v1/repos/'"$repo"''

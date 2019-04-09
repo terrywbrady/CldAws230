@@ -31,3 +31,55 @@ Assuming that my suspicion is true that the application is not yet ready for con
 ### Note
 
 Since the project requirements necessitate moving an application between regions, I imagine that target deployment server could be migrated between regions.  The deployment region could be a choice made in the initial user interface.
+
+## Design Ideas
+
+Manual setup
+- Create AMI for project
+  - Possibly script this as progress is made week to week
+  - Create EC2 with startup script
+  - https://wiki.duraspace.org/display/~terrywbrady/Create+EC2+for+DSpace+Docker
+  - Save AMI
+  - Clone AMI to supported regions
+  - Question: can the auto-terminate time be configured into the EC2
+    - Through AWS config (strongly preferred)
+    - Through OS script
+- User interface functions
+  - list running servers (with DNS link)
+  - show stop time
+  - show branch and PR
+  - Optional - add stop button
+  - Start button -> opens Launch Form
+- User Interface - Launch Form
+  - Cached list of regions with AMI
+  - List of branches in DSpace/DSpace (static or dynamic from GitHub API)
+  - List of pull requests in DSpace/DSpace (dynamic from DSpace)
+    - Can be blank to run the branch unaltered    
+  - Possible:
+    - ENV variable declarations to pass to docker compose
+- Call API Gateway / Lambda
+  - Save request to DynamoDB
+    - Request id (for refresh)
+    - Parameters
+    - Instance id
+    - Public DNS
+    - Running state
+    - Shutdown time
+- Process Launcher
+  - Param: number of running process
+  - Count running processes
+    - Verify running processes are still running
+    - Save DNS to DynamoDB once it is available
+  - If available slot, call lambda function to start an EC2
+- Lambda - launch server
+  - Pulls from AMI
+  - Pass branch and PR
+    - how are start up variables passed?
+  - Startup script refreshes code, pulls PR, builds image
+    - possible extension - publish built image to either Dockerhub or to Amazon image registry
+  - Run docker up
+  - (Set terminate time if possible)
+
+Other options
+- For quick response, would it be advantageous to stop and restart instances rather than recreating from AMI?  
+  - Evaluate cost of reserving and retaining the image

@@ -69,6 +69,14 @@ _git repos, docker images, docker compose files_
       - Each initiation is clean and cannot be impacted by a prior test
       - Since the web app instances will be accessible and editable on the public internet, the chance for corrupt data insertion is likely
       - __This is likely the more feasible option for the scope of this project__
+- EC2 startup process
+_The AMI already provides git, docker, docker-compose, and a cloned repo_
+  - Startup script refreshes code, pulls PR, builds image
+    - possible extension - publish built image to either Dockerhub or to Amazon image registry
+  - Run docker-compose build up
+    - with options appropriate to the branch and config
+  - Direct docker-compose output to CloudWatch logs
+    - provide some linkage to instnace name
 
 #### C4 Web App
 _This webapp would be available to a pool of power users of the open source system. This will be an experimental application for these users so any authentication process that is necessary will need to be minimal. This portion of the system should err on the side of accessibility over security.  The system will need to mitigate the risk of a malicious user._
@@ -84,6 +92,8 @@ Using Component C5, list the running instances initiated from the webapp.  Displ
   - DNS
     - URL's to the running applications: DNS + contextual by branch
   - Pre-set shutdown time
+  - Link to Cloud Watch Logs for instance
+    - Display docker-compose output
 - Provide a STOP button (maybe)
   - Minimal authentication required
 - Provide an EXTEND button to delay shutdown (maybe)
@@ -124,12 +134,6 @@ _In the last class, I used the Java API.  It seems like it would be easier to le
   - Should a kill trigger be set in the OS (not preferred)
   - Should this be externally controlled by another AWS service?
     - Call Component C7 via a scheduled lambda execution
-- EC2 startup process
-  _The AMI already provides git, docker, docker-compose, and a cloned repo_
-  - Startup script refreshes code, pulls PR, builds image
-    - possible extension - publish built image to either Dockerhub or to Amazon image registry
-  - Run docker-compose up
-    - with options appropriate to the branch and config
 
 #### C7 Lambda: Stop Running Instance
 Stop an instance freeing up a slot for a new launch

@@ -30,56 +30,106 @@ Assuming that my suspicion is true that the application is not yet ready for con
 
 ### Note
 
-Since the project requirements necessitate moving an application between regions, I imagine that target deployment server could be migrated between regions.  The deployment region could be a choice made in the initial user interface.
+~~Since the project requirements necessitate moving an application between regions, I imagine that target deployment server could be migrated between regions.  The deployment region could be a choice made in the initial user interface.~~
 
 ## Design Ideas
 
-Manual setup
+### System Components
+
+#### C1 DSpace code
+_git repos, docker images, docker compose files_
+- All of these resources are open source and downloadable
+
+#### C2 Manually built AMIs containing git, docker, docker-compose
 - Create AMI for project
   - Possibly script this as progress is made week to week
   - Create EC2 with startup script
   - https://wiki.duraspace.org/display/~terrywbrady/Create+EC2+for+DSpace+Docker
   - Save AMI
-  - Clone AMI to supported regions
-  - Question: can the auto-terminate time be configured into the EC2
-    - Through AWS config (strongly preferred)
-    - Through OS script
-- User interface functions
-  - list running servers (with DNS link)
-  - show stop time
-  - show branch and PR
-  - Optional - add stop button
-  - Start button -> opens Launch Form
-- User Interface - Launch Form
+    - Does this need to be saved to S3
+  - Clone AMI to supported regions (if scoped into project)
+
+#### C3 Managed pool of up to N EC2 instances that will run a specific branch/pr of DSpace within Docker.
+- 6G of RAM is needed, so I have been using t2.large instances
+- To manage costs for the scope of this project
+  - only 2-3 instances will be permitted to be up at a given time
+  - servers will only remain "up" for 30 min to 2 hours
+- If this project goes live, I will need to choose between the following options
+  - keep a pool of stopped instances running (in one region) that can be started on demand
+    - Pro's
+      - Faster start up
+      - Pre-cached docker instances may be present
+      - Pre-built docker volumes can persist between runs and will not require re-initialization (saves time and allows enrichment of test data)
+      - Potential to pre-reserve compute resources at a lower cost?
+      - As a production tool, this would likely better facilitate user testing
+  - Build a fresh instance from an AMI on start up
+    - Pro's
+      - Only one AMI needs to persist between runs
+      - AMI could be copied between regions (or should it be cloned into each supported region)
+      - Each initiation is clean and cannot be impacted by a prior test
+      - Since the web app instances will be accessible and editable on the public internet, the chance for corrupt data insertion is likely
+      - __This is likely the more feasible option for the scope of this project__
+
+#### C4 Web App
+_This webapp would be available to a pool of power users of the open source system. This will be an experimental application for these users so any authentication process that is necessary will need to be minimal. This portion of the system should err on the side of accessibility over security.  The system will need to mitigate the risk of a malicious user._
+
+##### C4A Web App: Display Running Instances
+Using Component C5, list the running instances initiated from the webapp.  Display the following
+- Config details used to start each instance
+  - branch
+  - PR
+  - expandable field to show optional config details
+- Runtime info
+  - instance id
+  - DNS
+    - URL's to the running applications: DNS + contextual by branch
+  - Pre-set shutdown time
+- Provide a STOP button (maybe)
+  - Minimal authentication required
+- Provide an EXTEND button to delay shutdown (maybe)
+  - Minimal authentication required
+
+##### C4B Web App: Start Instance
+Using Component C6, start a new instance
+- To launch a new instance
+  - Minimal authentication required
+- Form Fields (detail below)
   - Cached list of regions with AMI
   - List of branches in DSpace/DSpace (static or dynamic from GitHub API)
   - List of pull requests in DSpace/DSpace (dynamic from DSpace)
     - Can be blank to run the branch unaltered    
   - Possible:
     - ENV variable declarations to pass to docker compose
-- Call API Gateway / Lambda
-  - Save request to DynamoDB
-    - Request id (for refresh)
-    - Parameters
-    - Instance id
-    - Public DNS
-    - Running state
-    - Shutdown time
-- Process Launcher
-  - Param: number of running process
-  - Count running processes
-    - Verify running processes are still running
-    - Save DNS to DynamoDB once it is available
-  - If available slot, call lambda function to start an EC2
-- Lambda - launch server
-  - Pulls from AMI
-  - Pass branch and PR
-    - how are start up variables passed?
+    - Selectable JSON profiles for more complex docker compose init
+
+#### Lambdas
+_In the last class, I used the Java API.  It seems like it would be easier to learn Python and boto3 than to do formal Java builds_
+
+#### C5 Lambda: Get Running Instance Info
+- A lambda service will be needed to return information about the running instances
+  - Participating instances will be identified by unique tags
+  - Tags will contain summary display data about the init configuration
+
+#### C6 Lambda: Start Running Instance
+- Verify that no more than N-1 instances are running
+  - Where will N be set and managed?
+  - Provide cost estimate for N
+- Create EC2 from AMI, pass runtime config details (branch, PR, other config)
+- What is the right mechanism to pass this in?
+  - Tags
+  - Dynamo DB
+  - Something else in the instance object?
+- What is the right mechanism to program auto-stop the Instance
+  - Should this be set within the AWS instance?
+  - Should a kill trigger be set in the OS (not preferred)
+  - Should this be externally controlled by another AWS service?
+    - Call Component C7 via a scheduled lambda execution
+- EC2 startup process
+  _The AMI already provides git, docker, docker-compose, and a cloned repo_
   - Startup script refreshes code, pulls PR, builds image
     - possible extension - publish built image to either Dockerhub or to Amazon image registry
-  - Run docker up
-  - (Set terminate time if possible)
+  - Run docker-compose up
+    - with options appropriate to the branch and config
 
-Other options
-- For quick response, would it be advantageous to stop and restart instances rather than recreating from AMI?  
-  - Evaluate cost of reserving and retaining the image
+#### C7 Lambda: Stop Running Instance
+Stop an instance freeing up a slot for a new launch

@@ -13,22 +13,13 @@ docker build -t terrywbrady/cldaws230week3 .
 
 ## Execution
 
-To run the image (Linux/MacOS)
+To run the image
 ```
-docker run --rm -it terrywbrady/cldaws230week3
-```
-
-To run the image (Windows Git-Bash)
-```
-winpty docker run --rm -it terrywbrady/cldaws230week3
+docker run --rm --name pip -p 5000:5000 terrywbrady/cldaws230week3
 ```
 
-To run the image with a custom message (Linux/MacOS)
+To run multiple copies
+_I have not yet figured out how to map different host ports to port 5000_
 ```
-docker run --rm -it terrywbrady/cldaws230week3 Your Custom Message
-```
-To run the image with a custom message (Windows Git-Bash)
-
-```
-winpty docker run --rm -it terrywbrady/cldaws230week3 Your Custom Message
+docker run --rm --cpus 2 -p 5000:5000 terrywbrady/cldaws230week3
 ```

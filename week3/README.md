@@ -18,8 +18,8 @@ To run the image
 docker run --rm --name pip -p 5000:5000 terrywbrady/cldaws230week3
 ```
 
+## View the results
+Open the following link in your browser: http://localhost:5000
+
 To run multiple copies
-_I have not yet figured out how to map different host ports to port 5000_
-```
-docker run --rm --cpus 2 -p 5000:5000 terrywbrady/cldaws230week3
-```
+_I do not understand the suggestion in the assignment about running multiple copies of the application using `docker run`._

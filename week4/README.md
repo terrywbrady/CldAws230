@@ -12,5 +12,5 @@ yum install -y git
 
 runuser -l ec2-user -c 'git clone https://github.com/terrywbrady/CldAws230.git -b week4'
 chmod 775 /home/ec2-user/CldAws230/week4/kinesis.sh
-runuser -l ec2-user -c '/home/ec2-user/CldAws230/week4/kinesis.sh'
+/home/ec2-user/CldAws230/week4/kinesis.sh
 ```

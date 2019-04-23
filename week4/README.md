@@ -10,10 +10,10 @@ Startup Data
 # first install git
 yum install -y git
 
-git clone https://github.com/terrywbrady/CldAws230.git
 runuser -l ec2-user -c 'git clone https://github.com/terrywbrady/CldAws230.git'
 cd /home/ec2-user/CldAws230
-git checkout week4
+runuser -l ec2-user -c git checkout week4
 cd week4
+runuser -l ec2-user -c chmod 755 kinesis.sh
 ./kinesis.sh
 ```

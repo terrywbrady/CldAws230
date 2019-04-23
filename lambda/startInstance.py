@@ -1,0 +1,14 @@
+#### C6 Lambda: Start Running Instance
+- Verify that no more than N-1 instances are running
+  - Where will N be set and managed?
+  - Provide cost estimate for N
+- Create EC2 from AMI, pass runtime config details (branch, PR, other config)
+- What is the right mechanism to pass this in?
+  - Tags
+  - Dynamo DB
+  - Something else in the instance object?
+- What is the right mechanism to program auto-stop the Instance
+  - Should this be set within the AWS instance?
+  - Should a kill trigger be set in the OS (not preferred)
+  - Should this be externally controlled by another AWS service?
+    - Call Component C7 via a scheduled lambda execution

@@ -30,3 +30,5 @@ sudo chmod +x /usr/local/bin/docker-compose
 cd
 git clone https://github.com/DSpace-Labs/DSpace-Docker-Images.git
 cd DSpace-Docker-Images/docker-compose-files/dspace-compose
+
+docker-compose -p d6 -f docker-compose.yml -f d6.override.yml up -d

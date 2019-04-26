@@ -1,0 +1,52 @@
+{
+  "Resources": {
+    "Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-01bbe152bf19d0289",
+        "InstanceType": "t2.micro",
+        "UserData":
+          Fn::Base64:
+            !Sub |
+              yum install -y git
+
+              runuser -l ec2-user -c 'git clone https://github.com/terrywbrady/CldAws230.git -b week4'
+              chmod 775 /home/ec2-user/CldAws230/week4/kinesis.sh
+              /home/ec2-user/CldAws230/week4/kinesis.sh
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "EC2 Master"
+          }
+        ],
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": true,
+            "DeviceIndex": 0
+          }
+        ]
+      }
+    },
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security group for ssh",
+        "VpcId": "",
+        "SecurityGroupIngress": [
+          {
+            "FromPort": 22,
+            "ToPort": 22,
+            "IpProtocol": "tcp",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "FromPort": 80,
+            "ToPort": 80,
+            "IpProtocol": "tcp",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    }
+  }
+}

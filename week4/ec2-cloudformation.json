@@ -36,7 +36,7 @@
               "\n",
               [
                 "#!/bin/bash",
-                "curl -o /tmp/startup.sh https://raw.githubusercontent.com/terrywbrady/CldAws230/week4/week4/startup.sh",
+                "curl -o /tmp/startup.sh https://raw.githubusercontent.com/terrywbrady/CldAws230/week4a/week4/startup.sh",
                 "chmod 744 /tmp/startup.sh",
                 "/tmp/startup.sh"
               ]

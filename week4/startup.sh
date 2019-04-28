@@ -27,9 +27,4 @@ sudo chmod 755 /usr/local/bin/docker-compose
 
 
 # Clone DSpace-Docker-Images
-sudo su ec2-user -c cd
-
-sudo su ec2-user -c git clone https://github.com/DSpace-Labs/DSpace-Docker-Images.git
-sudo su ec2-user -c cd DSpace-Docker-Images/docker-compose-files/dspace-compose
-
-sudo su ec2-user -c docker-compose -p d6 -f docker-compose.yml -f d6.override.yml up -d
+sudo su -l ec2-user -c "cd;git clone https://github.com/DSpace-Labs/DSpace-Docker-Images.git;cd DSpace-Docker-Images/docker-compose-files/dspace-compose;docker-compose -p d6 -f docker-compose.yml -f d6.override.yml up -d"

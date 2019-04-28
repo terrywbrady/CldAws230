@@ -1,8 +1,8 @@
 {
   "Parameters" : {
-    "UserDataParameter" : {
+    "UserDataUrlParameter" : {
       "Type" : "String",
-      "Default" : "https://raw.githubusercontent.com/terrywbrady/CldAws230/week4/week4/startup.sh",
+      "Default" : "https://raw.githubusercontent.com/terrywbrady/CldAws230/week4a/week4/startup.sh",
       "Description" : "Startup script URL."
     },
     "InstanceNameParameter" : {
@@ -36,7 +36,15 @@
               "\n",
               [
                 "#!/bin/bash",
-                "curl -o /tmp/startup.sh https://raw.githubusercontent.com/terrywbrady/CldAws230/week4a/week4/startup.sh",
+                {
+                  "Fn::Join": [
+                    " ",
+                    [
+                      "curl -o /tmp/startup.sh",
+                      { "Ref" : "UserDataUrlParameter" }
+                    ]
+                  ]
+                },
                 "chmod 744 /tmp/startup.sh",
                 "/tmp/startup.sh"
               ]

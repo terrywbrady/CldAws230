@@ -28,10 +28,6 @@ Assuming that my suspicion is true that the application is not yet ready for con
 - Automatically shut down the instance after a prescribed amount of time.
 - Some control will be needed to limit the number of active deployments at one time.
 
-### Note
-
-~~Since the project requirements necessitate moving an application between regions, I imagine that target deployment server could be migrated between regions.  The deployment region could be a choice made in the initial user interface.~~
-
 ## Design Ideas
 
 ### System Components
@@ -39,47 +35,32 @@ Assuming that my suspicion is true that the application is not yet ready for con
 #### C1 DSpace code
 _git repos, docker images, docker compose files_
 - All of these resources are open source and downloadable
+- https://github.com/DSpace/DSpace
+- https://github.com/DSpace-Labs/DSpace-Docker-Images
 
 #### C2 Manually built AMIs containing git, docker, docker-compose
 - Create AMI for project
-  - Possibly script this as progress is made week to week
-  - Create EC2 with startup script
-  - https://wiki.duraspace.org/display/~terrywbrady/Create+EC2+for+DSpace+Docker
-  - Save AMI
-    - Does this need to be saved to S3
-  - Clone AMI to supported regions (if scoped into project)
+  - [Instance Requirements](https://wiki.duraspace.org/display/~terrywbrady/Create+EC2+for+DSpace+Docker)
+  - Create a [Cloud Formation Script](bootstrap/ec2-cloudformation.json) to create a baseline instance for this AMI
+  - Create EC2 with [startup script](bootstrap/startup.sh)
 
 #### C3 Managed pool of up to N EC2 instances that will run a specific branch/pr of DSpace within Docker.
 - 6G of RAM is needed, so I have been using t2.large instances
 - To manage costs for the scope of this project
   - only 2-3 instances will be permitted to be up at a given time
   - servers will only remain "up" for 30 min to 2 hours
-- If this project goes live, I will need to choose between the following options
-  - keep a pool of stopped instances running (in one region) that can be started on demand
-    - Pro's
-      - Faster start up
-      - Pre-cached docker instances may be present
-      - Pre-built docker volumes can persist between runs and will not require re-initialization (saves time and allows enrichment of test data)
-      - Potential to pre-reserve compute resources at a lower cost?
-      - As a production tool, this would likely better facilitate user testing
-  - Build a fresh instance from an AMI on start up
-    - Pro's
-      - Only one AMI needs to persist between runs
-      - AMI could be copied between regions (or should it be cloned into each supported region)
-      - Each initiation is clean and cannot be impacted by a prior test
-      - Since the web app instances will be accessible and editable on the public internet, the chance for corrupt data insertion is likely
-      - __This is likely the more feasible option for the scope of this project__
 - EC2 startup process
 _The AMI already provides git, docker, docker-compose, and a cloned repo_
   - Startup script refreshes code, pulls PR, builds image
     - possible extension - publish built image to either Dockerhub or to Amazon image registry
   - Run docker-compose build up
     - with options appropriate to the branch and config
-  - Direct docker-compose output to CloudWatch logs
+  - Stretch Goal: Direct docker-compose output to CloudWatch logs
     - provide some linkage to instnace name
 
 #### C4 Web App
-_This webapp would be available to a pool of power users of the open source system. This will be an experimental application for these users so any authentication process that is necessary will need to be minimal. This portion of the system should err on the side of accessibility over security.  The system will need to mitigate the risk of a malicious user._
+_This webapp would be available to a pool of power users of the open source system. This will be an experimental application for these users so any authentication process that is necessary will need to be minimal. This portion of the system should err on the side of accessibility over security.  The system will need to mitigate the risk of a malicious user.
+- [html, css, js files](web)
 
 ##### C4A Web App: Display Running Instances
 Using Component C5, list the running instances initiated from the webapp.  Display the following
@@ -92,7 +73,7 @@ Using Component C5, list the running instances initiated from the webapp.  Displ
   - DNS
     - URL's to the running applications: DNS + contextual by branch
   - Pre-set shutdown time
-  - Link to Cloud Watch Logs for instance
+  - Stretch Goal: Link to Cloud Watch Logs for instance
     - Display docker-compose output
 - Provide a STOP button (maybe)
   - Minimal authentication required
@@ -119,6 +100,9 @@ _In the last class, I used the Java API.  It seems like it would be easier to le
 - A lambda service will be needed to return information about the running instances
   - Participating instances will be identified by unique tags
   - Tags will contain summary display data about the init configuration
+- Code: Implementation in Progress
+  - [Lambda Code](lambda/getInstances.py)
+
 
 #### C6 Lambda: Start Running Instance
 - Verify that no more than N-1 instances are running
@@ -127,13 +111,24 @@ _In the last class, I used the Java API.  It seems like it would be easier to le
 - Create EC2 from AMI, pass runtime config details (branch, PR, other config)
 - What is the right mechanism to pass this in?
   - Tags
-  - Dynamo DB
   - Something else in the instance object?
 - What is the right mechanism to program auto-stop the Instance
   - Should this be set within the AWS instance?
   - Should a kill trigger be set in the OS (not preferred)
   - Should this be externally controlled by another AWS service?
     - Call Component C7 via a scheduled lambda execution
+- Code: Implementation in Progress
+  - [Lambda Code](lambda/startInstance.py)
+  - [Lambda Permissions](lambda/lambdaPerms.json)
 
 #### C7 Lambda: Stop Running Instance
 Stop an instance freeing up a slot for a new launch
+
+- Code: Not started
+  - [Lambda Code](lambda/stopInstance.py)
+
+#### C8 Lambda: Misc Utils
+- Code: Not Started
+  - [Get PRs](lambda/getPRs.py)
+  - [Get Branches](lambda/getBranches.py)
+  - [Get Config](lambda/getConfig.py)

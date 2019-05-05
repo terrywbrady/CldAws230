@@ -2,7 +2,7 @@
   "Parameters" : {
     "UserDataUrlParameter" : {
       "Type" : "String",
-      "Default" : "https://raw.githubusercontent.com/terrywbrady/CldAws230/week4a/week4/startup.sh",
+      "Default" : "https://raw.githubusercontent.com/terrywbrady/CldAws230/project/bootstrap/startup.sh",
       "Description" : "Startup script URL."
     },
     "InstanceNameParameter" : {

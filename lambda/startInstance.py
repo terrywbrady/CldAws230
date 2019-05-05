@@ -1,19 +1,3 @@
-#### C6 Lambda: Start Running Instance
-- Verify that no more than N-1 instances are running
-  - Where will N be set and managed?
-  - Provide cost estimate for N
-- Create EC2 from AMI, pass runtime config details (branch, PR, other config)
-- What is the right mechanism to pass this in?
-  - Tags
-  - Dynamo DB
-  - Something else in the instance object?
-- What is the right mechanism to program auto-stop the Instance
-  - Should this be set within the AWS instance?
-  - Should a kill trigger be set in the OS (not preferred)
-  - Should this be externally controlled by another AWS service?
-    - Call Component C7 via a scheduled lambda execution
-
-
 import boto3
 import base64
 # Enter the region your instances are in. Include only the region without specifying Availability Zone; e.g.; 'us-east-1'
@@ -54,34 +38,3 @@ def lambda_handler(event, context):
         ids[0]=instance.id
     ec2.create_tags(Resources=ids,Tags=tags)
 
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        },
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": [
-                "ec2:Describe*",
-                "ec2:Start*",
-                "ec2:RunInstances",
-                "ec2:Stop*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "VisualEditor2",
-            "Effect": "Allow",
-            "Action": "logs:CreateLogGroup",
-            "Resource": "arn:aws:logs:*:*:*"
-        }
-    ]
-}

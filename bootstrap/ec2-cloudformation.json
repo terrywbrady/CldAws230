@@ -1,0 +1,90 @@
+{
+  "Parameters" : {
+    "UserDataUrlParameter" : {
+      "Type" : "String",
+      "Default" : "https://raw.githubusercontent.com/terrywbrady/CldAws230/week4a/week4/startup.sh",
+      "Description" : "Startup script URL."
+    },
+    "InstanceNameParameter" : {
+      "Type" : "String",
+      "Default" : "ec2-dspace",
+      "Description" : "Generated Instance Name."
+    },
+    "InstanceTypeParameter" : {
+      "Type" : "String",
+      "Default" : "t2.large",
+      "Description" : "Instance Type."
+    },
+    "KeyName": {
+      "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instances",
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "ConstraintDescription" : "must be the name of an existing EC2 KeyPair"
+    }
+  },
+  "Resources": {
+    "Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-01e24be29428c15b2",
+        "InstanceType": { "Ref" : "InstanceTypeParameter" },
+        "KeyName": {
+          "Ref": "KeyName"
+        },
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "\n",
+              [
+                "#!/bin/bash",
+                {
+                  "Fn::Join": [
+                    " ",
+                    [
+                      "curl -o /tmp/startup.sh",
+                      { "Ref" : "UserDataUrlParameter" }
+                    ]
+                  ]
+                },
+                "chmod 744 /tmp/startup.sh",
+                "/tmp/startup.sh"
+              ]
+            ]
+          }
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": { "Ref" : "InstanceNameParameter" }
+          }
+        ],
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": true,
+            "DeviceIndex": 0
+          }
+        ]
+      }
+    },
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security group for ssh",
+        "VpcId": "",
+        "SecurityGroupIngress": [
+          {
+            "FromPort": 22,
+            "ToPort": 22,
+            "IpProtocol": "tcp",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "FromPort": 80,
+            "ToPort": 80,
+            "IpProtocol": "tcp",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    }
+  }
+}

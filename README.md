@@ -60,7 +60,9 @@ _The AMI already provides git, docker, docker-compose, and a cloned repo_
 
 #### C4 Web App
 _This webapp would be available to a pool of power users of the open source system. This will be an experimental application for these users so any authentication process that is necessary will need to be minimal. This portion of the system should err on the side of accessibility over security.  The system will need to mitigate the risk of a malicious user.
-- [html, css, js files](web)
+
+- Code: Not Started
+  - [html, css, js files](web)
 
 ##### C4A Web App: Display Running Instances
 Using Component C5, list the running instances initiated from the webapp.  Display the following
@@ -100,7 +102,7 @@ _In the last class, I used the Java API.  It seems like it would be easier to le
 - A lambda service will be needed to return information about the running instances
   - Participating instances will be identified by unique tags
   - Tags will contain summary display data about the init configuration
-- Code: Implementation in Progress
+- Code: Not Started
   - [Lambda Code](lambda/getInstances.py)
 
 

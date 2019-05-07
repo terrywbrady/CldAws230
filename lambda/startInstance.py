@@ -32,9 +32,8 @@ def lambda_handler(event, context):
         InstanceType='t2.large',
         UserData=userdata
     )
-    print 'started your instances: ' + str(instances)
     ids=[]
-    for instance in instances:
-        ids[0]=instance.id
+    for instance in instances['Instances']:
+        ids.append(instance['InstanceId'])
+    print '**** ' + str(ids)
     ec2.create_tags(Resources=ids,Tags=tags)
-

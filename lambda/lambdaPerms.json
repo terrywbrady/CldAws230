@@ -17,6 +17,7 @@
                 "ec2:Describe*",
                 "ec2:Start*",
                 "ec2:RunInstances",
+                "ec2:CreateTags",
                 "ec2:Stop*"
             ],
             "Resource": "*"

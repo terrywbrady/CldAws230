@@ -15,4 +15,4 @@ for res in reservations['Reservations']:
         print id + "\t" + name + "\t" + dns
         for key in instance.keys():
             print "\t- " + key
-print "hi"
+print "--- describe done"

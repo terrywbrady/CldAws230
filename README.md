@@ -134,3 +134,24 @@ Stop an instance freeing up a slot for a new launch
   - [Get PRs](lambda/getPRs.py)
   - [Get Branches](lambda/getBranches.py)
   - [Get Config](lambda/getConfig.py)
+
+
+## Status
+- Next Steps
+  - Re-review project reqs to make sure all reqs are covered
+  - API Gateway for Lambda code
+  - Initial web app code to interact with APIs
+- Week 6
+  - [describe.py](lambda/describe.py) Find Instances started with DSpace Tag
+  - [startInstance.py](lambda/startInstance.py) Apply DSpace Tag to Instances
+- Week 5
+  - [startInstance.py](lambda/startInstance.py) Initial Code - Start instance from AMI
+- Week 4
+  - Create a [Cloud Formation Script](bootstrap/ec2-cloudformation.json) to create a baseline instance for this AMI
+  - Create EC2 with [startup script](bootstrap/startup.sh)
+- Prior Weeks
+  - Document Design Goals
+  
+## Questions
+- Is there an API call that I could make to set a termination time for an instance?  Otherwise, I will run a lambda every 5 minutes to look for instances to terminate (if they have been up for longer than a prescribed time)
+- What is the best way to pass a PR into an instance?  Can I read tags from within the instance?  If necessary, I will embed this into the UserData.

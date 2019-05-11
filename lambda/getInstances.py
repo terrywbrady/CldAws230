@@ -3,8 +3,7 @@ import boto3
 import json
 import sys
 import base64
-import pytz
-from pytz import timezone
+import dateutil.tz
 import datetime
 
 # =====================================================
@@ -14,7 +13,7 @@ DSPACE_TAG_NAME  = "DSpace"
 DSPACE_TAG_VALUE = "DSpace"
 MAX_INSTANCE     = 2
 REGION           = 'us-west-2'
-TZONE            = timezone('US/Pacific')
+TZONE            = dateutil.tz.gettz('US/Pacific')
 UPTIME           = "60"
 
 # =====================================================
@@ -26,7 +25,7 @@ UPTIME           = "60"
 def lambda_getInstances(event, context):
     return {
         'statusCode': 200,
-        'body': json.dumps(getInstanceObjects())
+        'body': json.dumps(getInstanceJsonObjects())
     }
     
 def getInstanceObjects():
@@ -34,6 +33,15 @@ def getInstanceObjects():
     for instance in getInstances(): 
         fres.append(makeObj(instance))
     return fres
+
+def getInstanceJsonObjects():
+    json = []
+    for instance in getInstances(): 
+        obj = makeObj(instance)
+        obj['launchTime'] = str(obj['launchTime'].astimezone(TZONE))
+        obj['endTime'] = str(obj['endTime'].astimezone(TZONE))
+        json.append(obj)
+    return json
 
 def makeObj(instance):
     tags = instance['Tags']
@@ -148,7 +156,8 @@ def lambda_stopInstances(event, context):
 def stopInstances():
     objarr = getInstanceObjects()
     ids = getObjIds(objarr)
-    ec2 = getEC2().stop_instances(InstanceIds=ids)
+    if (len(ids) > 0):
+        ec2 = getEC2().stop_instances(InstanceIds=ids)
     return ids
 
 # Lambda invoked from web form via API gateway
@@ -164,7 +173,8 @@ def lambda_stopInstance(event, context):
 def stopInstance(id):
     objarr = getInstanceObjects()
     ids = getObjIdsByVal(objarr, id)
-    ec2 = getEC2().stop_instances(InstanceIds=ids)
+    if (len(ids) > 0):
+        ec2 = getEC2().stop_instances(InstanceIds=ids)
     return ids
 
 # Lambda invoked by cron/schedule - will run every 5 min
@@ -179,7 +189,8 @@ def lambda_stopOvertimeInstances(event, context):
 def stopOvertimeInstances():
     objarr = getInstanceObjects()
     ids = getObjIdsByDate(objarr)
-    ec2 = getEC2().stop_instances(InstanceIds=ids)
+    if (len(ids) > 0):
+        ec2 = getEC2().stop_instances(InstanceIds=ids)
     return ids
 
 # =====================================================
@@ -236,7 +247,7 @@ def getObjIdsByVal(objarr, val):
 def getObjIdsByDate(objarr):
     ids=[]
     for obj in objarr:
-        if obj['endTime'] < datetime.datetime.now(pytz.UTC):
+        if obj['endTime'] < datetime.datetime.now(dateutil.tz.UTC):
             ids.append(obj['id'])
     return ids    
 
@@ -247,7 +258,7 @@ def getObjIdsByDate(objarr):
 
 def printObj(obj):
     d = obj['endTime'].astimezone(TZONE)
-    stat = "OVERTIME" if (obj['endTime'] < datetime.datetime.now(pytz.UTC)) else "--"
+    stat = "OVERTIME" if (obj['endTime'] < datetime.datetime.now(dateutil.tz.UTC)) else "--"
     print "\t" + obj['id'] + "\t" + obj['state'] + "\t" + obj['dns'] + "\t" + str(d) + "\t" + stat
 
 
@@ -276,7 +287,7 @@ def doCommandLine():
     elif (cmd == "userdata"):
         print getUserData()
     else:
-        print "list instances: " + str(datetime.datetime.now(TZONE)) + " " + str(TZONE)
+        print "list instances: " + str(datetime.datetime.now(TZONE)) 
         for obj in getInstanceObjects():
             printObj(obj)
         

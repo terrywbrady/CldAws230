@@ -103,7 +103,7 @@ _In the last class, I used the Java API.  It seems like it would be easier to le
   - Participating instances will be identified by unique tags
   - Tags will contain summary display data about the init configuration
 - Code: Not Started
-  - [Lambda Code](lambda/getInstances.py)
+  - [Lambda Code](lambda/getInstances.py) lambda_getInstances
 
 
 #### C6 Lambda: Start Running Instance
@@ -120,14 +120,17 @@ _In the last class, I used the Java API.  It seems like it would be easier to le
   - Should this be externally controlled by another AWS service?
     - Call Component C7 via a scheduled lambda execution
 - Code: Implementation in Progress
-  - [Lambda Code](lambda/startInstance.py)
+  - [Lambda Code](getInstances.py) lambda_startInstances
   - [Lambda Permissions](lambda/lambdaPerms.json)
 
 #### C7 Lambda: Stop Running Instance
 Stop an instance freeing up a slot for a new launch
 
 - Code: Not started
-  - [Lambda Code](lambda/stopInstance.py)
+  - [Lambda Code](getInstances.py) 
+    - lambda_stopInstance: stop a specific instance
+    - lambda_stopInstances: stop all running instances
+    - lambda_stopOvertimeInstances: stop all overtime instances (cron/schedule driven)
 
 #### C8 Lambda: Misc Utils
 - Code: Not Started
@@ -142,10 +145,10 @@ Stop an instance freeing up a slot for a new launch
   - API Gateway for Lambda code
   - Initial web app code to interact with APIs
 - Week 6
-  - [describe.py](lambda/describe.py) Find Instances started with DSpace Tag
-  - [startInstance.py](lambda/startInstance.py) Apply DSpace Tag to Instances
+  - [getInstances.py](lambda/getInstances.py) Find Instances started with DSpace Tag
+    - Initially, I planned to create several different python files, but there is so much shared code between the Lambdas, I decided to keep it all in one module 
 - Week 5
-  - [startInstance.py](lambda/startInstance.py) Initial Code - Start instance from AMI
+  - Initial Code - Start instance from AMI and insert user data
 - Week 4
   - Create a [Cloud Formation Script](bootstrap/ec2-cloudformation.json) to create a baseline instance for this AMI
   - Create EC2 with [startup script](bootstrap/startup.sh)
@@ -155,4 +158,3 @@ Stop an instance freeing up a slot for a new launch
 ## Questions
 - Is there an API call that I could make to set a termination time for an instance?  Otherwise, I will run a lambda every 5 minutes to look for instances to terminate (if they have been up for longer than a prescribed time)
 - What is the best way to pass a PR into an instance?  Can I read tags from within the instance?  If necessary, I will embed this into the UserData.
-- What is the best way to share code between multiple Lambdas

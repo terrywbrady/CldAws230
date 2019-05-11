@@ -1,3 +1,5 @@
+# For simplicity, this may not be implmented
+# ===================================
 {
     "s3url": "text",
     "github_repo": "url",

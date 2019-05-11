@@ -155,3 +155,4 @@ Stop an instance freeing up a slot for a new launch
 ## Questions
 - Is there an API call that I could make to set a termination time for an instance?  Otherwise, I will run a lambda every 5 minutes to look for instances to terminate (if they have been up for longer than a prescribed time)
 - What is the best way to pass a PR into an instance?  Can I read tags from within the instance?  If necessary, I will embed this into the UserData.
+- What is the best way to share code between multiple Lambdas

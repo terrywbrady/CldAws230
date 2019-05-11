@@ -1,39 +1,53 @@
 import boto3
 import base64
-# Enter the region your instances are in. Include only the region without specifying Availability Zone; e.g.; 'us-east-1'
-region = 'us-west-2'
-# Enter your instances here: ex. ['X-XXXXXXXX', 'X-XXXXXXXX']
-ami = "ami-01861f340864168b2" #dspace-source
-tags = [
-    {
-        'Key':'DSpace',
-        'Value':'DSpace'
-    },
-    {
-        'Key':'Name',
-        'Value':'MyDSpaceProject'
-    }
-]
+import json
 
-userdata="""
+def getAmi():
+    return "ami-01861f340864168b2" #dspace-source
+
+def getTags():
+    return [
+        {
+            'Key':'DSpace',
+            'Value':'DSpace'
+        },
+        {
+            'Key':'Name',
+            'Value':'MyDSpaceProject'
+        }
+    ]
+
+def getUserData():
+    return base64.b64encode("""
     #!/bin/bash
-    sudo su -l ec2-user -c 'cd;cd DSpace-Docker-Images;git pull origin;cd docker-compose-files/dspace-compose;docker-compose -p d6 -f docker-compose.yml -f d6.override.yml up -d'
-"""
-userdata=base64.b64encode(userdata)
+    sudo su -l ec2-user -c 'cd /home/ec2-user/DSpace-Docker-Images'
+    sudo su -l ec2-user -c 'git pull origin'
+    sudo su -l ec2-user -c 'cd docker-compose-files/dspace-compose'
+    sudo su -l ec2-user -c 'docker-compose -p d6 -f docker-compose.yml -f d6.override.yml up -d'
+    """)
+
+def getEC2():
+    region = 'us-west-2'
+    return boto3.client('ec2', region_name=region)
 
 def lambda_handler(event, context):
-    ec2 = boto3.client('ec2', region_name=region)
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.ServiceResource.create_instances
     # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
+    ec2 = getEC2()
     instances = ec2.run_instances(
         MaxCount=1,
         MinCount=1,
-        ImageId=ami,
+        ImageId=getAmi(),
         InstanceType='t2.large',
-        UserData=userdata
+        UserData=getUserData()
     )
     ids=[]
     for instance in instances['Instances']:
         ids.append(instance['InstanceId'])
-    print '**** ' + str(ids)
-    ec2.create_tags(Resources=ids,Tags=tags)
+    ec2.create_tags(Resources=ids,Tags=getTags())
+    return {
+        'statusCode': 200,
+        'body': json.dumps(ids)
+    }
+
+lambda_handler([],[])

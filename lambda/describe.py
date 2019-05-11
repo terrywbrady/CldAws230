@@ -29,9 +29,19 @@ for res in reservations['Reservations']:
             'state': instance['State']['Name'],
             'dns': getKey(instance, 'PublicDnsName', ""),
             'launchTime': str(instance['LaunchTime']),
-            'endTime': str((instance['LaunchTime'] + timedelta(hours=1)))
-            #'launchTime': str(instance['LaunchTime'].astimezone(HERE)),
-            #'endTime': str((instance['LaunchTime'] + timedelta(hours=1)).astimezone(HERE))
+            'endTime': str((instance['LaunchTime'] + timedelta(hours=1))),
+            'logs': 'tbd',
+            'config': {
+                'branch': 'tbd',
+                'pr': 'tbd',
+                'started_by': 'tbd',
+                'requrested_timeout': 60,
+                'environment': {},
+                'services': {
+                    'name': 'tbd',
+                    'url': 'tbd'
+                }
+            }
         }
         fres.append(obj)
 

@@ -120,7 +120,7 @@ _In the last class, I used the Java API.  It seems like it would be easier to le
   - Should this be externally controlled by another AWS service?
     - Call Component C7 via a scheduled lambda execution
 - Code: Implementation in Progress
-  - [Lambda Code](getInstances.py) lambda_startInstances
+  - [Lambda Code](lambda/getInstances.py) lambda_startInstances
   - [Lambda Permissions](lambda/lambdaPerms.json)
 
 #### C7 Lambda: Stop Running Instance
@@ -145,8 +145,12 @@ Stop an instance freeing up a slot for a new launch
   - API Gateway for Lambda code
   - Initial web app code to interact with APIs
 - Week 6
-  - [getInstances.py](lambda/getInstances.py) Find Instances started with DSpace Tag
-    - Initially, I planned to create several different python files, but there is so much shared code between the Lambdas, I decided to keep it all in one module 
+  - [getInstances.py](lambda/getInstances.py) 
+    - Initially, I planned to create several different python files, but there is so much shared code between the Lambdas, I decided to keep it all in one module.
+    - CLI interface to list, stop, start instances
+    - API Gateway method to list instances
+    - API Gateway method to start an instance
+    - Cloud Watch Rule to stop instances that are over time
 - Week 5
   - Initial Code - Start instance from AMI and insert user data
 - Week 4
@@ -158,3 +162,5 @@ Stop an instance freeing up a slot for a new launch
 ## Questions
 - Is there an API call that I could make to set a termination time for an instance?  Otherwise, I will run a lambda every 5 minutes to look for instances to terminate (if they have been up for longer than a prescribed time)
 - What is the best way to pass a PR into an instance?  Can I read tags from within the instance?  If necessary, I will embed this into the UserData.
+- I want multiple Lambdas to share the same code.  What is the best way to accomplish this?
+  - Currently, I am testing via CLI in Cloud9 and then replicating the code to multiple Lambdas.

@@ -21,13 +21,14 @@ https://github.com/terrywbrady/info
 - Lambda 
 - API Gateway
 - Cloud Watch Rules
-- Non AWS
-  - GitHub API
-  - Docker, Docker Compose
 
----
-## Design
-![Overview Diagram](presentation/CldAws230-Drawing.jpg)
++++
+## Non AWS Services
+- GitHub API
+- Docker
+- Docker Compose (launching DSpace)
+
+---?image=presentation/CldAws230-Drawing.jpg
 
 ---
 ## Security and Cost Considerations
@@ -46,16 +47,29 @@ https://github.com/terrywbrady/info
 
 +++
 
-## Security
+## Security - Public Web Resources
 
 - EC2 resources will be publicly accessible (for end users)
   - The dashboard will make test resources accessible
 - Lambdas will be publicly accessible
   - The StartInstance lambda could trigger a costly resources
   - Perhaps some additional verification could be added here
+
++++
+
+## Security - CORS
 - CORS resources are wide open
++++
+
+## Security - EC2 Ports
 - The ports on the running DSpace instances could be more carefully restricted
-- More elegant management of keyfile
+
++++
+
+## Security - Keyfile
+
+- A specifically named keyfile is specified on startup.  
+- While the file is not exposed, a more elegant approach is needed
 
 ---
 
@@ -66,6 +80,22 @@ https://github.com/terrywbrady/info
 - Create a DSpace PR
 - Deploy PR
 - DSpace: View modified version
+
++++
+- TBD: Dashboard (Web App): Start, List, Stop
+
++++
+- TBD: - DSpace: View default
+
++++
+- TBD: - Create a DSpace PR
+
++++
+- TBD: - Deploy PR
+
++++
+- TBD: - DSpace: View modified version
+
 
 ---
 ## Further Enhancements
@@ -85,16 +115,45 @@ https://github.com/terrywbrady/info
 
 +++
 
-## AWS Operation Functinality
+## AWS Operations - Functinality
 
 - Make logs accessible
 - Security enhancments (see earlier slide)
 - Regional deployment
 - Find AMI by tag rather than hard-coding
+
++++
+
+## AWS Operations - Portability to another account
 - Generate AMI with CloudFormation
+- Create Lambda security group with Cloud Formation
 - Deploy Lambda and API Gateway with Cloud Formation
 - Deploy S3 website with Cloud Formation
 
 ---
 ## References
 
+- Cloud Formation
+- Bootstrap Script
+- Lambda Permissions
+- Lambda Instances
+- Lambda GitHub API
+- Webapp JavaSciprt
+
++++?code=bootstrap/ec2-cloudformation.json
+## Cloud Formation
+
++++?code=bootstrap/startup.sh
+## Bootstrap Script
+
++++?code=lambda/lambdaPerms.json
+## Lambda Permissions
+
++++?code=lambda/getInstances.py
+## Lambda Instances
+
++++?code=lambda/getBranches.py
+## Lambda GitHub API
+
++++?code=web/dspaceLauncher.js
+## Webapp JavaSciprt

@@ -1,0 +1,7 @@
+slide-number: true
+
+background-size : contain
+
+theme-override : PITCHME.css
+
+footer: https://github.com/terrywbrady/CldAws230

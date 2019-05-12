@@ -145,11 +145,14 @@ Stop an instance freeing up a slot for a new launch
   - API Gateway for Lambda code
   - Initial web app code to interact with APIs
 - Week 6
+  - [web page code](web)
+    - app is deployable to S3 
   - [getInstances.py](lambda/getInstances.py) 
     - Initially, I planned to create several different python files, but there is so much shared code between the Lambdas, I decided to keep it all in one module.
     - CLI interface to list, stop, start instances
-    - API Gateway method to list instances
-    - API Gateway method to start an instance
+    - API Gateway resource to list instances
+    - API Gateway resource to start an instance
+    - API Gateway resource to stop an instance
     - Cloud Watch Rule to stop instances that are over time
 - Week 5
   - Initial Code - Start instance from AMI and insert user data

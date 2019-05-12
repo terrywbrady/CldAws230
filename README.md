@@ -145,6 +145,7 @@ Stop an instance freeing up a slot for a new launch
   - API Gateway for Lambda code
   - Initial web app code to interact with APIs
 - Week 6
+  - [Presentation Template](https://gitpitch.com/terrywbrady/CldAws230)
   - [web page code](web)
     - app is deployable to S3 
   - [getInstances.py](lambda/getInstances.py) 

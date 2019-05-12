@@ -1,0 +1,4 @@
+table {border-collapse: collapse;border-right:solid thin black; width: 90%}
+table td, table th {border: thin solid black; padding: 4px;}
+tr.header th {background-color: #ddd;}
+tr:hover td {background-color: yellow;}

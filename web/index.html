@@ -1,6 +1,36 @@
 <html>
-    <head></head>
+    <head>
+      <script	src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css"></link>
+      <link rel="stylesheet" type="text/css" href="dspaceLauncher.css"/>
+      <script type="text/javascript" src="dspaceLauncher.js"></script>
+      <script type="text/javascript" src="dspaceLauncher.init.js"></script>
+    </head>
     <body>
-        <h1>Dashboard</h1>
+        <h1>DSpace Launcher Dashboard</h1>
+        <p>
+          <a href="https://dspace.org">DSpace</a> is an open-source repository platform used by universities and other institutions.
+          This tool is designed to help end users test pull requests for the platform.
+          The tool will launch an instance of DSpace within Docker on an AWS instance.
+        </p>
+        <h2>Running Instances</h2>
+        <div id="instances">
+          <table>
+            <tr class="header">
+              <th>Instance Id</th>
+              <th>State</th>
+              <th>DNS</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+            </tr>
+          </table>
+        </div>
+        <h2>Start Instance</h2>
+        <div>
+          <button id="startInstance" disabled>Start Instance</button>
+        </div>
+        <h2>Code Repo</h2>
+        <p><a href="https://github.com/terrywbrady/Cldaws230">https://github.com/terrywbrady/Cldaws230</a>
     </body>
 </html>

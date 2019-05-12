@@ -25,6 +25,7 @@ UPTIME           = "60"
 def lambda_getInstances(event, context):
     return {
         'statusCode': 200,
+        'headers': { 'Access-Control-Allow-Origin': '*'},
         'body': json.dumps(getInstanceJsonObjects())
     }
     
@@ -131,11 +132,13 @@ def lambda_startInstances(event, context):
         ids = startInstance()
         return {
             'statusCode': 200,
+            'headers': { 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps(ids)
         }
     else:
         return {
             'statusCode': 429,
+            'headers': { 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps("Too many running instances")
         }
 
@@ -150,6 +153,7 @@ def lambda_stopInstances(event, context):
     ids = stopInstances()
     return {
         'statusCode': 200,
+        'headers': { 'Access-Control-Allow-Origin': '*'},
         'body': json.dumps(ids)
     }
     
@@ -167,6 +171,7 @@ def lambda_stopInstance(event, context):
     ids = stopInstance("xx")
     return {
         'statusCode': 200,
+        'headers': { 'Access-Control-Allow-Origin': '*'},
         'body': json.dumps(ids)
     }
 
@@ -183,6 +188,7 @@ def lambda_stopOvertimeInstances(event, context):
     ids = stopOvertimeInstances()
     return {
         'statusCode': 200,
+        'headers': { 'Access-Control-Allow-Origin': '*'},
         'body': json.dumps(ids)
     }
 

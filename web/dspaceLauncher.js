@@ -1,14 +1,16 @@
 // API_BASE will be set in dspaceLauncher.init.js
 $(document).ready(function(){
+  $("#refresh").on("click", function(){refresh();});
   refresh();
   $("#startInstance")
     .on("click", function(){
+      $("#startInstance").attr("disabled", true);
       $.ajax({
         type: "POST",
         url: API_BASE+"/projcreateinstance",
         data: {},
         success: function(){
-          setTimeout(2000, function(){refresh()});
+          setTimeout(function(){refresh()}, 2000);
         },
         failure: function() {
           alert("Instance Start Failed");
@@ -56,6 +58,6 @@ function refresh() {
 
 function stopInstance(id) {
   $.getJSON(API_BASE+"/projstopinstances?id="+id, function(data){
-    setTimeout(2000, refresh());
+    setTimeout(refresh(), 2000);
   });
 }

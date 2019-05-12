@@ -81,20 +81,24 @@ https://github.com/terrywbrady/info
 - Deploy PR
 - DSpace: View modified version
 
++++
+## DSpace Instance Manager Dashboard
+
 +++?image=presentation/dashboard.gif
 
 +++
-- TBD: - DSpace: View default
+## DSpace Demo
+
++++?image=presentation/dspace.gif
 
 +++
-- TBD: - Create a DSpace PR
+## Create a DSpace PR
 
 +++
-- TBD: - Deploy PR
+## Deploy PR through Dashboard
 
 +++
-- TBD: - DSpace: View modified version
-
+## DSpace: Demonstrate PR Changes
 
 ---
 ## Further Enhancements

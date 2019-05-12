@@ -167,8 +167,8 @@ def stopInstances():
 # Lambda invoked from web form via API gateway
 # --------------------------------------------
 def lambda_stopInstance(event, context):
-    # TODO: read from context
-    ids = stopInstance("xx")
+    id = event['id']
+    ids = stopInstance(id)
     return {
         'statusCode': 200,
         'headers': { 'Access-Control-Allow-Origin': '*'},

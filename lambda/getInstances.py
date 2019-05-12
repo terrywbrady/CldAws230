@@ -167,7 +167,8 @@ def stopInstances():
 # Lambda invoked from web form via API gateway
 # --------------------------------------------
 def lambda_stopInstance(event, context):
-    id = event['id']
+    qp = event["queryStringParameters"] if 'queryStringParameters' in event else {}
+    id = qp['id'] if 'id' in qp else ""
     ids = stopInstance(id)
     return {
         'statusCode': 200,

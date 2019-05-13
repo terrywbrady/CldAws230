@@ -36,9 +36,9 @@ function refresh() {
         );
 
       tr.append($("<td/>").text(obj['id']))
+        .append($("<td/>").text(obj['name']))
         .append(tdstate)
         .append(tddns)
-        .append($("<td/>").text(obj['launchTime']))
         .append($("<td/>").text(obj['endTime']));
     }
     $("#startInstance").attr("disabled", (data.length >= 2));

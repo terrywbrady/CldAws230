@@ -16,6 +16,7 @@
             "Effect": "Allow",
             "Action": [
                 "ec2:Describe*",
+                "ec2:TerminateInstances",
                 "ec2:Start*",
                 "ec2:RunInstances",
                 "ec2:CreateTags",

@@ -50,25 +50,38 @@ def makeObj(instance):
     
     dstart = instance['LaunchTime']
     dend = dstart + datetime.timedelta(minutes=uptime)
+    branch = getTagVal(tags, 'Branch', "")
+    services = []
+    if branch == "master":
+        services.append({
+            "name":"rest", 
+            "path":":8080/spring-rest"
+        })
+        services.append({
+            "name":"angular", 
+            "path":":8080/spring-rest"
+        })
+    elif branch == "dspace-6_x" or branch == "dspace-5_x" or branch == "dspace-4_x":
+        services.append({
+            "name":"xmlui", 
+            "path":":8080/xmlui"
+        })
+        services.append({
+            "name":"jspui", 
+            "path":":8080/jspui"
+        })
     return { 
         'found': 1,
         'name': getTagVal(tags, 'Name', ""),
+        'branch': branch,
+        'pr': getTagVal(tags, 'PRNUM', ""),
         'id': instance['InstanceId'],
         'state': instance['State']['Name'],
         'dns': getKey(instance, 'PublicDnsName', ""),
         'launchTime': dstart,
         'endTime': dend,
         'logs': 'tbd',
-        'config': {
-            'branch': 'tbd',
-            'pr': 'tbd',
-            'started_by': 'tbd',
-            'environment': {},
-            'services': {
-                'name': 'tbd',
-                'url': 'tbd'
-            }
-        }
+        'services': services
     }
     
 # =====================================================
@@ -87,22 +100,48 @@ def getTags(pr, branch, title):
         },
         {
             'Key':'Name',
-            'Value': pr + "; " + branch + "; " + title 
+            'Value': title 
         },
         {
             'Key':'UPTIME',
             'Value': UPTIME
+        },
+        {
+            'Key':'Branch',
+            'Value': branch
+        },
+        {
+            'Key':'PRNUM',
+            'Value': pr
         }
     ]
 
 # TODO: read context from instance
 def getUserData(pr, branch):
+    ver = " -f d7.override.yml"
+    if branch == "master":
+      ver = " -f d7.override.yml"
+    elif branch == "dspace-6_x":
+      ver = " -f d6.override.yml"
+    elif branch == "dspace-5_x":
+      ver = " -f d5.override.yml"
+    elif branch == "dspace-4_x":
+      ver = " -f d4.override.yml"
+
     commands = [
+        "cd /home/ec2-user/",
+        "git clone https://github.com/DSpace/DSpace.git -b " + branch,
+        "cd DSpace",
+        "export DSPACE_SRC=$PWD",
+        "curl -o /tmp/pr.patch -L https://github.com/DSpace/DSpace/pull/" + pr + ".diff" if pr != "" else "",
+        "git apply /tmp/pr.patch" if pr != "" else "",
         "cd /home/ec2-user/DSpace-Docker-Images",
         "git pull origin",
         "cd docker-compose-files/dspace-compose",
-        "docker-compose -p d6 -f docker-compose.yml -f d6.override.yml up -d"
+        "docker-compose -f docker-compose.yml " + ver + " -f src.override.yml build",
+        "docker-compose -f docker-compose.yml " + ver + " -f src.override.yml up -d"
     ]
+
     return "#!/bin/bash\nsudo su -l ec2-user -c '" + ";".join(commands) + "'"
 
 # TODO: Take Parameters
@@ -165,7 +204,7 @@ def stopInstances():
     objarr = getInstanceObjects()
     ids = getObjIds(objarr)
     if (len(ids) > 0):
-        ec2 = getEC2().stop_instances(InstanceIds=ids)
+        ec2 = getEC2().terminate_instances(InstanceIds=ids)
     return ids
 
 # Lambda invoked from web form via API gateway
@@ -184,7 +223,7 @@ def stopInstance(id):
     objarr = getInstanceObjects()
     ids = getObjIdsByVal(objarr, id)
     if (len(ids) > 0):
-        ec2 = getEC2().stop_instances(InstanceIds=ids)
+        ec2 = getEC2().terminate_instances(InstanceIds=ids)
     return ids
 
 # Lambda invoked by cron/schedule - will run every 5 min
@@ -201,7 +240,7 @@ def stopOvertimeInstances():
     objarr = getInstanceObjects()
     ids = getObjIdsByDate(objarr)
     if (len(ids) > 0):
-        ec2 = getEC2().stop_instances(InstanceIds=ids)
+        ec2 = getEC2().terminate_instances(InstanceIds=ids)
     return ids
 
 # =====================================================

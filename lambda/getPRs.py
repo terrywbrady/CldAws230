@@ -15,6 +15,13 @@ import re
 
 def getPRs():
     prs = []
+    
+    for branch in ['master','dspace-6_x','dspace-5_x','dspace-4_x']:
+        prs.append({
+            'prnum': '',
+            'base': branch,
+            'title': 'Branch'
+        })
     for page in range(1, 2):
         req = urllib2.Request('https://api.github.com/repos/DSpace/DSpace/pulls?page=' + str(page))
         req.add_header('accept', 'application/json')
@@ -26,7 +33,6 @@ def getPRs():
             prnum = match.group(1) if match else ""
             prs.append({
                 'prnum': prnum,
-                'state': pr['state'],
                 'title': pr['title'],
                 'base': pr['base']['ref'],
             })

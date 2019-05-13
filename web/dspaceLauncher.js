@@ -18,13 +18,14 @@ function refresh() {
       var tr = $("<tr class='data'/>");
       $("#instances table").append(tr);
       var obj = data[i];
-      var tddns = $("<td/>")
-        .append($("<a/>")
-          .text(obj['dns'])
-          .attr("href", "http://"+obj['dns']+":8080/xmlui")
-        );
-      var tdstate = $("<td/>")
-        .text(obj['state']+" ")
+      var tddns = $("<td/>").text(obj['dns'].replace(/\..*$/,""))
+      for(var j=0; j<data[i].services.length; j++){
+        var sv = data[i].services[j];
+        var url = "http://"+obj['dns']+sv.path;
+        tddns.append($("<span> </span>"));
+        tddns.append($("<a/>").text(sv.name).attr("href", url));
+      }
+      var tdact = $("<td/>")
         .append(
           $("<button class='stop'/>")
             .text("Stop")
@@ -36,8 +37,11 @@ function refresh() {
         );
 
       tr.append($("<td/>").text(obj['id']))
+        .append($("<td/>").text(obj['pr']))
+        .append($("<td/>").text(obj['branch']))
         .append($("<td/>").text(obj['name']))
-        .append(tdstate)
+        .append($("<td/>").text(obj['state']))
+        .append(tdact)
         .append(tddns)
         .append($("<td/>").text(obj['endTime']));
     }

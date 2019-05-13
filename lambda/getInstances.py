@@ -129,18 +129,26 @@ def getUserData(pr, branch):
       ver = " -f d4.override.yml"
 
     commands = [
-        "cd /home/ec2-user/",
-        "git clone https://github.com/DSpace/DSpace.git -b " + branch,
-        "cd DSpace",
-        "export DSPACE_SRC=$PWD",
-        "curl -o /tmp/pr.patch -L https://github.com/DSpace/DSpace/pull/" + pr + ".diff" if pr != "" else "",
-        "git apply /tmp/pr.patch" if pr != "" else "",
-        "cd /home/ec2-user/DSpace-Docker-Images",
-        "git pull origin",
-        "cd docker-compose-files/dspace-compose",
-        "docker-compose -f docker-compose.yml " + ver + " -f src.override.yml build",
-        "docker-compose -f docker-compose.yml " + ver + " -f src.override.yml up -d"
     ]
+    if (pr != ""):
+        commands = [
+            "cd /home/ec2-user/",
+            "git clone https://github.com/DSpace/DSpace.git -b " + branch,
+            "cd DSpace",
+            "export DSPACE_SRC=$PWD",
+            "curl -o /tmp/pr.patch -L https://github.com/DSpace/DSpace/pull/" + pr + ".diff",
+            "git apply /tmp/pr.patch",
+        ]
+        
+    commands.append("cd /home/ec2-user/DSpace-Docker-Images")
+    commands.append("git pull origin")
+    commands.append("cd docker-compose-files/dspace-compose")
+
+    if (pr != ""):
+        commands.append("docker-compose -f docker-compose.yml " + ver + " -f src.override.yml build")
+        commands.append("docker-compose -f docker-compose.yml " + ver + " -f src.override.yml up -d")
+    else:
+        commands.append("docker-compose -f docker-compose.yml " + ver + " up -d")
 
     return "#!/bin/bash\nsudo su -l ec2-user -c '" + ";".join(commands) + "'"
 

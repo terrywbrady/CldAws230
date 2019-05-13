@@ -11,21 +11,25 @@
 import boto3
 import urllib2
 import json
+import re
 
 def getPRs():
-    req = urllib2.Request('https://api.github.com/repos/DSpace/DSpace/pulls?base=dspace-6_x')
-    req.add_header('accept', 'application/json')
-    response = urllib2.urlopen(req)
-    jsondata = json.load(response)
-    
     prs = []
-    for pr in jsondata:
-        prs.append({
-            'url': pr['url'],
-            'state': pr['state'],
-            'title': pr['title'],
-            'base': pr['base']['ref'],
-        })
+    for page in range(1, 2):
+        req = urllib2.Request('https://api.github.com/repos/DSpace/DSpace/pulls?page=' + str(page))
+        req.add_header('accept', 'application/json')
+        response = urllib2.urlopen(req)
+        jsondata = json.load(response)
+    
+        for pr in jsondata:
+            match = re.match(r".*/(\d+)$", pr['url'])
+            prnum = match.group(1) if match else ""
+            prs.append({
+                'prnum': prnum,
+                'state': pr['state'],
+                'title': pr['title'],
+                'base': pr['base']['ref'],
+            })
     return prs
 
 def lambda_handler(event, context):
@@ -37,4 +41,4 @@ def lambda_handler(event, context):
 
 prs=getPRs()
 for pr in getPRs():
-    print pr['url']+" "+pr['base']
+    print pr['prnum']+" "+pr['base'] +"\t" + pr['title']

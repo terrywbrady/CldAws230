@@ -79,7 +79,7 @@ def makeObj(instance):
 def getAmi():
     return "ami-01861f340864168b2" #dspace-source
 
-def getTags():
+def getTags(pr, branch, title):
     return [
         {
             'Key': DSPACE_TAG_NAME,
@@ -87,7 +87,7 @@ def getTags():
         },
         {
             'Key':'Name',
-            'Value':'MyDSpaceProject'
+            'Value': pr + "; " + branch + "; " + title 
         },
         {
             'Key':'UPTIME',
@@ -96,7 +96,7 @@ def getTags():
     ]
 
 # TODO: read context from instance
-def getUserData():
+def getUserData(pr, branch):
     commands = [
         "cd /home/ec2-user/DSpace-Docker-Images",
         "git pull origin",
@@ -106,7 +106,7 @@ def getUserData():
     return "#!/bin/bash\nsudo su -l ec2-user -c '" + ";".join(commands) + "'"
 
 # TODO: Take Parameters
-def startInstance():
+def startInstance(pr, branch, title):
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.ServiceResource.create_instances
     # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
     ec2 = getEC2()
@@ -115,25 +115,29 @@ def startInstance():
         MinCount=1,
         ImageId=getAmi(),
         InstanceType='t2.large',
-        UserData=getUserData(),
+        UserData=getUserData(pr, branch),
         KeyName='week8key'
     )
     ids=[]
     for instance in instances['Instances']:
         ids.append(instance['InstanceId'])
-    ec2.create_tags(Resources=ids,Tags=getTags())
+    ec2.create_tags(Resources=ids,Tags=getTags(pr, branch, title))
     return ids
 
 def checkRunningInstances():
     return len(getInstanceObjects()) < MAX_INSTANCE
 
 def lambda_startInstances(event, context):
+    body = json.loads(event['body'])
+    pr = body['prnum']
+    branch = body['base']
+    title = body['title']
     if checkRunningInstances():
-        ids = startInstance()
+        ids = startInstance(pr, branch, title)
         return {
             'statusCode': 200,
             'headers': { 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps(ids)
+            'body': json.dumps([pr, branch, title])
         }
     else:
         return {
@@ -266,7 +270,7 @@ def getObjIdsByDate(objarr):
 def printObj(obj):
     d = obj['endTime'].astimezone(TZONE)
     stat = "OVERTIME" if (obj['endTime'] < datetime.datetime.now(dateutil.tz.UTC)) else "--"
-    print "\t" + obj['id'] + "\t" + obj['state'] + "\t" + obj['dns'] + "\t" + str(d) + "\t" + stat
+    print "\t" + obj['id'] + "\t" + obj['name'] + "\t" + obj['state'] + "\t" + obj['dns'] + "\t" + str(d) + "\t" + stat
 
 
 def doCommandLine():
@@ -275,9 +279,11 @@ def doCommandLine():
     
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     opt = sys.argv[2] if len(sys.argv) > 2 else ""
+    opt2 = sys.argv[3] if len(sys.argv) > 3 else ""
+    opt3 = sys.argv[4] if len(sys.argv) > 4 else ""
     if (cmd == "start"):
         if checkRunningInstances():
-            ids = startInstance()
+            ids = startInstance(opt, opt2, opt3)
             print "started " + str(ids)
         else:
             print "ERROR: Too Many Running Instances"
@@ -292,7 +298,7 @@ def doCommandLine():
         ids = stopOvertimeInstances()
         print "Stopped " + str(ids)
     elif (cmd == "userdata"):
-        print getUserData()
+        print getUserData(opt, opt2)
     else:
         print "list instances: " + str(datetime.datetime.now(TZONE)) 
         for obj in getInstanceObjects():

@@ -77,14 +77,15 @@ function startInstance(){
   $.ajax({
     type: "POST",
     url: API_BASE+"/projcreateinstance",
-    data: data,
+    data: JSON.stringify(data),
+    dataType: "json",
+    contentType: 'application/json',
     success: function(){
       setTimeout(function(){refresh()}, 2000);
     },
     failure: function() {
       alert("Instance Start Failed");
       refresh();
-    },
-    dataType: "json"
+    }
   });
 }

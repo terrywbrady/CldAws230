@@ -228,3 +228,10 @@ _Time permitting._
 @[53-65](Call Get PRs Lambda)
 @[69-71](Call Stop Instance Lambda)
 @[75-94](Call Start Instance Lambda)
+
+---
+
+### Thank You
+
+- https://github.com/terrywbrady/Cldaws230
+- https://github.com/terrywbrady/info

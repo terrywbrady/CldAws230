@@ -153,7 +153,7 @@ https://github.com/terrywbrady/info
 ---
 ## References
 
-_Time will not permit to include this in the presentation, but these references can answer questions about the implementation._
+_Time permitting._
 
 - Cloud Formation
 - Bootstrap Script
@@ -162,14 +162,18 @@ _Time will not permit to include this in the presentation, but these references 
 - Lambda GitHub API
 - Webapp JavaSciprt
 
++++
+#### Cloud Formation to Create AMI
+
 +++?code=bootstrap/ec2-cloudformation.json
-@[](Cloud Formation to Create AMI)
 @[3-7](URL Parameter for startup script)
 @[8-21](Other Parameters)
 @[29-32](Image Type and Key Name Parameter Ref)
 @[34-52](Inject startup script URL into UserData)
 @[54-59](Add Name Paremeter to Tags)
 
++++
+#### Bootstrap Script for EC2 that will become an AMI
 
 +++?code=bootstrap/startup.sh
 @[4-7](Install Java)
@@ -177,11 +181,15 @@ _Time will not permit to include this in the presentation, but these references 
 @[11-18](Install Docker)
 @[20-24](Install Docker Compose)
 @[26-27](Pre-load Docker Images)
-#### Bootstrap Script for EC2 that will become an AMI
+
++++
+#### Lambda Permissions
 
 +++?code=lambda/lambdaPerms.json
 @[17-24](EC2 Operations Performed by Lambda)
-#### Lambda Permissions
+
++++
+#### Lambda Instances
 
 +++?code=lambda/getInstances.py
 @[27-32](Get Instances Lambda -> ec2.describe_instances)
@@ -199,13 +207,17 @@ _Time will not permit to include this in the presentation, but these references 
 @[327-336](CLI testing interface)
 @[337-346](CLI testing interface)
 @[347-356](CLI testing interface)
-#### Lambda Instances
+
++++
+#### Lambda GitHub API
 
 +++?code=lambda/getPRs.py
 @[25-39](Call GitHub API)
 @[41-47](Get PRs Lambda)
 @[49-51](CLI Tester)
-#### Lambda GitHub API
+
++++
+#### Webapp JavaSciprt
 
 +++?code=web/dspaceLauncher.js
 @[3-11](Load Resources)
@@ -216,4 +228,3 @@ _Time will not permit to include this in the presentation, but these references 
 @[53-65](Call Get PRs Lambda)
 @[69-71](Call Stop Instance Lambda)
 @[75-94](Call Start Instance Lambda)
-#### Webapp JavaSciprt

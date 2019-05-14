@@ -1,4 +1,4 @@
-## CldAws230 Project 
+## DSpace Launcher Dashboard - Deploy a PR on AWS for Testing 
 
 [![Demonstration Video](https://i.ytimg.com/vi/lQp_G9A9uL0/hqdefault.jpg)](https://www.youtube.com/watch?v=lQp_G9A9uL0)
 

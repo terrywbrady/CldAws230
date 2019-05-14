@@ -13,7 +13,7 @@ https://github.com/terrywbrady/info
 - Ths project will build an automated system to build an deploy a test instance of DSpace using code from a specific [pull request](https://github.com/DSpace/DSpace/pulls).
 - The system will carefully manage deployed instances in order to control costs.
 
-+++?video=https://youtu.be/lQp_G9A9uL0
++++?video=https://www.youtube.com/embed/lQp_G9A9uL0
 
 ---
 

@@ -16,7 +16,7 @@ import re
 def getPRs():
     prs = []
     
-    for branch in ['master','dspace-6_x','dspace-5_x','dspace-4_x']:
+    for branch in ['master', 'preview','dspace-6_x','dspace-5_x','dspace-4_x']:
         prs.append({
             'prnum': '',
             'base': branch,

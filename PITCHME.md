@@ -97,7 +97,7 @@ https://github.com/terrywbrady/info
 +++?image=presentation/baseline.png
 
 +++
-## Create a DSpace PR
+## Create a [DSpace PR](https://github.com/DSpace/DSpace/pull/2424/files)
 
 +++?image=presentation/pr.png
 
@@ -128,12 +128,19 @@ https://github.com/terrywbrady/info
 
 +++
 
-## AWS Operations - Functinality
+## AWS Operations - Functionality
 
 - Make logs accessible
 - Security enhancments (see earlier slide)
 - Regional deployment
 - Find AMI by tag rather than hard-coding
+
++++
+
+## AWS Operations - Development
+
+- Automate Lambda Deployment
+- Automate S3 Web Resource Deployment
 
 +++
 
@@ -146,6 +153,8 @@ https://github.com/terrywbrady/info
 ---
 ## References
 
+_Time will not permit to include this in the presentation, but these references can answer questions about the implementation._
+
 - Cloud Formation
 - Bootstrap Script
 - Lambda Permissions
@@ -154,6 +163,11 @@ https://github.com/terrywbrady/info
 - Webapp JavaSciprt
 
 +++?code=bootstrap/ec2-cloudformation.json
+@[3-7](URL Parameter for startup script)
+@[8-21](Other Parameters)
+@[29-32](Image Type and Key Name Parameter Ref)
+@[34-52](Inject startup script URL into image)
+@[54-59](Add Name Paremeter to Tags)
 ## Cloud Formation
 
 +++?code=bootstrap/startup.sh

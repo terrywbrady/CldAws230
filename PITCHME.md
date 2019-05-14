@@ -33,6 +33,7 @@ The system will carefully manage deployed instances in order to control costs.
 - Lambda
 - API Gateway
 - Cloud Watch Rule
+- System Manager (SSM) Parameter Store
 
 +++
 ## Non AWS Services
@@ -52,9 +53,9 @@ The system will carefully manage deployed instances in order to control costs.
 
 ## Cost Management
 
-- DSpace requires an m2.large or larger EC2 instance.
-- The system will cap the number of instances that can be started at once.
-- The system will set an expiration time on each instance.
+- DSpace requires an m2.large or larger EC2 instance (SSM Param)
+- The system will cap the number of instances that can be started at once (SSM Param)
+- The system will set an expiration time on each instance (SSM Param)
 - A Cloud Watch Rule + Lambda will terminate resources that have exceeded uptime
 
 +++
@@ -143,7 +144,6 @@ The system will carefully manage deployed instances in order to control costs.
 
 ## AWS Operations - Functionality
 
-- Dashboard controls for setting instance type and max instances
 - Make logs accessible
 - Security enhancments (see earlier slide)
 - Regional deployment
@@ -206,21 +206,23 @@ _Time will not likely permit this level of detail._
 #### Lambda Instances
 
 +++?code=lambda/getInstances.py
-@[27-32](Get Instances Lambda -> ec2.describe_instances)
-@[97-107](Create Tags)
-@[108-119](Create Tags)
-@[121-130](Inject UserData)
-@[131-140](Inject UserData)
-@[141-150](Inject UserData)
-@[151-157](Inject UserData)
-@[178-179](Check that running instances does not exceed max allowed)
-@[181-192](Start Instance Lambda -> ec2.run_instances)
-@[224-232](Stop Instance Lambda -> ec2.terminate_instances)
-@[243-249](Stop Overtime Instance Lambda -- Cloud Watch Rule)
-@[266-278](Filter Running Instances)
-@[327-336](CLI testing interface)
-@[337-346](CLI testing interface)
-@[347-356](CLI testing interface)
+@[9-18](Read SSM Stored Parameters)
+@[20-30](Read SSM Stored Parameters)
+@[39-44](Get Instances Lambda -> ec2.describe_instances)
+@[109-119](Create Tags)
+@[120-131](Create Tags)
+@[133-142](Inject UserData)
+@[143-152](Inject UserData)
+@[153-162](Inject UserData)
+@[163-171](Inject UserData)
+@[192-193](Check that running instances does not exceed max allowed)
+@[195-206](Start Instance Lambda -> ec2.run_instances)
+@[238-246](Stop Instance Lambda -> ec2.terminate_instances)
+@[257-263](Stop Overtime Instance Lambda -- Cloud Watch Rule)
+@[280-292](Filter Running Instances)
+@[341-350](CLI testing interface)
+@[351-360](CLI testing interface)
+@[361-370](CLI testing interface)
 
 +++
 #### Lambda GitHub API

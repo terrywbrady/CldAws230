@@ -1,10 +1,14 @@
-## DSpace Launcher Dashboard - Deploy a PR on AWS for Testing 
+## DSpace Launcher Dashboard - Deploy a PR on AWS for Testing
 
 [![Demonstration Video](https://i.ytimg.com/vi/lQp_G9A9uL0/hqdefault.jpg)](https://www.youtube.com/watch?v=lQp_G9A9uL0)
 
 ## Class Presentation
 
 - https://gitpitch.com/terrywbrady/CldAws230
+
+## Overview
+
+![Overview](presentation/CldAws230-Drawing.jpg)
 
 ### Background
 
@@ -42,8 +46,8 @@ Assuming that my suspicion is true that the application is not yet ready for con
 - Week 6
   - [Presentation Template](https://gitpitch.com/terrywbrady/CldAws230)
   - [web page code](web)
-    - app is deployable to S3 
-  - [getInstances.py](lambda/getInstances.py) 
+    - app is deployable to S3
+  - [getInstances.py](lambda/getInstances.py)
     - Initially, I planned to create several different python files, but there is so much shared code between the Lambdas, I decided to keep it all in one module.
     - CLI interface to list, stop, start instances
     - API Gateway resource to list instances
@@ -57,11 +61,8 @@ Assuming that my suspicion is true that the application is not yet ready for con
   - Create EC2 with [startup script](bootstrap/startup.sh)
 - Prior Weeks
   - Document Design Goals
-  
+
 ## Questions
 - I have the following system configuration hard-coded into a Lambda. https://github.com/terrywbrady/CldAws230/blob/master/lambda/getInstances.py#L12-L19  These settings are the primary dials that I can use to manage the cost of the application I have created. As I think about this, I wish these values were not in code. I wish that I could set them within a dashboard of some type.
   - Number of EC2 instances to manage
   - EC2 image type to start
-
-
-

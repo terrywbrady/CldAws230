@@ -166,21 +166,44 @@ _Time will not permit to include this in the presentation, but these references 
 @[3-7](URL Parameter for startup script)
 @[8-21](Other Parameters)
 @[29-32](Image Type and Key Name Parameter Ref)
-@[34-52](Inject startup script URL into image)
+@[34-52](Inject startup script URL into UserData)
 @[54-59](Add Name Paremeter to Tags)
-## Cloud Formation
+#### Cloud Formation
 
 +++?code=bootstrap/startup.sh
-## Bootstrap Script
+@[4-7](Install Java)
+@[8-9](Install Git)
+@[11-18](Install Docker)
+@[20-24](Install Docker Compose)
+@[26-27](Pre-load Docker Images)
+#### Bootstrap Script for EC2 that will become an AMI
 
 +++?code=lambda/lambdaPerms.json
-## Lambda Permissions
+@[17-24](EC2 Operations Performed by Lambda)
+#### Lambda Permissions
 
 +++?code=lambda/getInstances.py
-## Lambda Instances
+@[27-32](Get Instances Lambda -> ec2.describe_instances)
+@[97-119](Create Tags)
+@[121-157](Inject UserData)
+@[178-179](Check that running instances does not exceed max allowed)
+@[181-192](Start Instance Lambda -> ec2.run_instances)
+@[224-232](Stop Instance Lambda -> ec2.terminate_instances)
+@[243-249](Stop Overtime Instance Lambda -- Cloud Watch Rule)
+@[266-278](Filter Running Instances)
+@[327-356](CLI testing interface)
+#### Lambda Instances
 
-+++?code=lambda/getBranches.py
-## Lambda GitHub API
++++?code=lambda/getPRs.py
+@[25-39](Call GitHub API)
+@[41-47](Get PRs Lambda)
+@[49-51](CLI Tester)
+#### Lambda GitHub API
 
 +++?code=web/dspaceLauncher.js
+@[3-11](Load Resources)
+@[14-49](Call Get Instances Lambda)
+@[53-65](Call Get PRs Lambda)
+@[69-71](Call Stop Instance Lambda)
+@[75-94](Call Start Instance Lambda)
 ## Webapp JavaSciprt

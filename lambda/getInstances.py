@@ -61,7 +61,7 @@ def makeObj(instance):
         })
         services.append({
             "name":"angular", 
-            "path":":8080/spring-rest"
+            "path":":3000"
         })
     elif branch == "dspace-6_x" or branch == "dspace-5_x" or branch == "dspace-4_x":
         services.append({

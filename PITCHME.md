@@ -12,13 +12,13 @@ https://github.com/terrywbrady/info
 - Ths project will build an automated system to build an deploy a test instance of DSpace using code from a specific [pull request](https://github.com/DSpace/DSpace/pulls).
 - The system will carefully manage deployed instances in order to control costs.
 
---- 
+---
 
 ## Services Used
 - AWS Cloud Formation
 - S3
 - EC2
-- Lambda 
+- Lambda
 - API Gateway
 - Cloud Watch Rule
 
@@ -81,24 +81,23 @@ https://github.com/terrywbrady/info
 - Deploy PR
 - DSpace: View modified version
 
-+++
-## DSpace Instance Manager Dashboard
++++?image=presentation/dspace.gif
+## DSpace
 
 +++?image=presentation/dashboard.gif
+## DSpace Instance Manager Dashboard
 
-+++
+
++++?image=presentation/baseline.png
 ## DSpace Demo
 
-+++?image=presentation/dspace.gif
-
-+++
++++?image=presentation/pr.png
 ## Create a DSpace PR
 
-+++
-## Deploy PR through Dashboard
-
-+++
++++?image=presentation/withPR.png
 ## DSpace: Demonstrate PR Changes
+
++++?image=presentation/dashboard2.gif
 
 ---
 ## Further Enhancements

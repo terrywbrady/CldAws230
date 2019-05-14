@@ -163,12 +163,13 @@ _Time will not permit to include this in the presentation, but these references 
 - Webapp JavaSciprt
 
 +++?code=bootstrap/ec2-cloudformation.json
+@[](Cloud Formation to Create AMI)
 @[3-7](URL Parameter for startup script)
 @[8-21](Other Parameters)
 @[29-32](Image Type and Key Name Parameter Ref)
 @[34-52](Inject startup script URL into UserData)
 @[54-59](Add Name Paremeter to Tags)
-#### Cloud Formation
+
 
 +++?code=bootstrap/startup.sh
 @[4-7](Install Java)
@@ -184,14 +185,20 @@ _Time will not permit to include this in the presentation, but these references 
 
 +++?code=lambda/getInstances.py
 @[27-32](Get Instances Lambda -> ec2.describe_instances)
-@[97-119](Create Tags)
-@[121-157](Inject UserData)
+@[97-107](Create Tags)
+@[108-119](Create Tags)
+@[121-130](Inject UserData)
+@[131-140](Inject UserData)
+@[141-150](Inject UserData)
+@[151-157](Inject UserData)
 @[178-179](Check that running instances does not exceed max allowed)
 @[181-192](Start Instance Lambda -> ec2.run_instances)
 @[224-232](Stop Instance Lambda -> ec2.terminate_instances)
 @[243-249](Stop Overtime Instance Lambda -- Cloud Watch Rule)
 @[266-278](Filter Running Instances)
-@[327-356](CLI testing interface)
+@[327-336](CLI testing interface)
+@[337-346](CLI testing interface)
+@[347-356](CLI testing interface)
 #### Lambda Instances
 
 +++?code=lambda/getPRs.py
@@ -202,8 +209,11 @@ _Time will not permit to include this in the presentation, but these references 
 
 +++?code=web/dspaceLauncher.js
 @[3-11](Load Resources)
-@[14-49](Call Get Instances Lambda)
+@[14-23](Call Get Instances Lambda)
+@[44-33](Call Get Instances Lambda)
+@[34-43](Call Get Instances Lambda)
+@[44-49](Call Get Instances Lambda)
 @[53-65](Call Get PRs Lambda)
 @[69-71](Call Stop Instance Lambda)
 @[75-94](Call Start Instance Lambda)
-## Webapp JavaSciprt
+#### Webapp JavaSciprt

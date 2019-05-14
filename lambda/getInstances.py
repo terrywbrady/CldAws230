@@ -7,16 +7,28 @@ import dateutil.tz
 import datetime
 
 # =====================================================
+# AWS System Manager Parameter Store
+# =====================================================
+ssm = boto3.client('ssm', region_name="us-west-2")
+def getSSMParam(key, value):
+    p = ssm.get_parameter(Name=key)
+    return p['Parameter']['Value'] if p else value
+
+def getSSMIntParam(key, value):
+    return int(getSSMParam(key, value))
+
+# =====================================================
 # Constants
 # =====================================================
+
 DSPACE_TAG_NAME  = "DSpace"
 DSPACE_TAG_VALUE = "DSpace"
-MAX_INSTANCE     = 2
+MAX_INSTANCE     = getSSMIntParam("DSPACE_DASHBOARD.MAX_INSTANCES", 2)
 REGION           = 'us-west-2'
 TZONE            = dateutil.tz.gettz('US/Pacific')
-UPTIME           = "60"
-#INSTTYPE         = 't2.large'
-INSTTYPE         = 't2.xlarge'
+UPTIME           = getSSMParam("DSPACE_DASHBOARD.UPTIME", "60")
+INSTTYPE         = getSSMParam("DSPACE_DASHBOARD.INSTANCE_TYPE", "t2.xlarge")
+
 
 # =====================================================
 # Get Instances
@@ -41,8 +53,8 @@ def getInstanceJsonObjects():
     json = []
     for instance in getInstances(): 
         obj = makeObj(instance)
-        obj['launchTime'] = str(obj['launchTime'].astimezone(TZONE))
-        obj['endTime'] = str(obj['endTime'].astimezone(TZONE))
+        obj['launchTime'] = str(obj['launchTime'].astimezone(TZONE)) + " PT"
+        obj['endTime'] = str(obj['endTime'].astimezone(TZONE)) + " PT"
         json.append(obj)
     return json
 
@@ -54,7 +66,7 @@ def makeObj(instance):
     dend = dstart + datetime.timedelta(minutes=uptime)
     branch = getTagVal(tags, 'Branch', "")
     services = []
-    if branch == "master":
+    if branch == "master" or branch == "preview":
         services.append({
             "name":"rest", 
             "path":":8080/spring-rest"
@@ -123,6 +135,8 @@ def getUserData(pr, branch):
     ver = " -f d7.override.yml"
     if branch == "master":
       ver = " -f d7.override.yml"
+    elif branch == "preview":
+      ver = " -f d7.override.yml -f d7.preview.yml -f load.entities.yml"
     elif branch == "dspace-6_x":
       ver = " -f d6.override.yml"
     elif branch == "dspace-5_x":

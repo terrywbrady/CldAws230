@@ -1,4 +1,4 @@
-# These are the permissions needed for the Lambdas to run
+[
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -31,4 +31,39 @@
             "Resource": "arn:aws:logs:*:*:*"
         }
     ]
+},
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:Describe*",
+                "ssm:Get*",
+                "ssm:List*"
+            ],
+            "Resource": "*"
+        }
+    ]
+},
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "logs:CreateLogGroup",
+            "Resource": "arn:aws:logs:us-west-2:580250893597:*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:us-west-2:580250893597:log-group:/aws/lambda/StopEC2Instances:*"
+            ]
+        }
+    ]
 }
+]

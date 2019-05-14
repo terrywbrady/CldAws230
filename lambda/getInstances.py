@@ -15,6 +15,8 @@ MAX_INSTANCE     = 2
 REGION           = 'us-west-2'
 TZONE            = dateutil.tz.gettz('US/Pacific')
 UPTIME           = "60"
+#INSTTYPE         = 't2.large'
+INSTTYPE         = 't2.xlarge'
 
 # =====================================================
 # Get Instances
@@ -147,10 +149,10 @@ def getUserData(pr, branch):
     commands.append("cd docker-compose-files/dspace-compose")
 
     if (pr != ""):
-        commands.append("docker-compose -f docker-compose.yml " + ver + " -f src.override.yml build")
-        commands.append("docker-compose -f docker-compose.yml " + ver + " -f src.override.yml up -d")
+        commands.append("docker-compose -p dspace -f docker-compose.yml " + ver + " -f src.override.yml build")
+        commands.append("docker-compose -p dspace -f docker-compose.yml " + ver + " -f src.override.yml up -d")
     else:
-        commands.append("docker-compose -f docker-compose.yml " + ver + " up -d")
+        commands.append("docker-compose -p dspace -f docker-compose.yml " + ver + " up -d")
 
     return "#!/bin/bash\nsudo su -l ec2-user -c '" + ";".join(commands) + "'"
 
@@ -163,7 +165,7 @@ def startInstance(pr, branch, title):
         MaxCount=1,
         MinCount=1,
         ImageId=getAmi(),
-        InstanceType='t2.large',
+        InstanceType=INSTTYPE,
         UserData=getUserData(pr, branch),
         KeyName='week8key'
     )

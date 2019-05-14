@@ -133,8 +133,10 @@ def getUserData(pr, branch):
     if (pr != ""):
         commands = [
             "cd /home/ec2-user/",
-            "git clone https://github.com/DSpace/DSpace.git -b " + branch,
+            "git clone https://github.com/DSpace/DSpace.git",
             "cd DSpace",
+            "git checkout " + branch,
+            "git pull",
             "export DSPACE_SRC=$PWD",
             "curl -o /tmp/pr.patch -L https://github.com/DSpace/DSpace/pull/" + pr + ".diff",
             "git apply /tmp/pr.patch",

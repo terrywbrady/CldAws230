@@ -132,9 +132,10 @@ The system will carefully manage deployed instances in order to control costs.
 
 ## Additional Functionality
 
-- Support all branches of DSpace - customize webapps per branch
-- Make EC2/Docker startup logs accessible
+- Make EC2/Docker startup logs accessible 
+  - Flask on server OR use Kinesis
 - Post incremental status updates during startup process
+  - Use tag api
 - Explore ECS or EKS instead of EC2 for deployment
 - Explore code pipeline to build and publish PR images
 
@@ -142,6 +143,7 @@ The system will carefully manage deployed instances in order to control costs.
 
 ## AWS Operations - Functionality
 
+- Dashboard controls for setting instance type and max instances
 - Make logs accessible
 - Security enhancments (see earlier slide)
 - Regional deployment
@@ -165,7 +167,7 @@ The system will carefully manage deployed instances in order to control costs.
 ---
 ## References
 
-_Time permitting._
+_Time will not likely permit this level of detail._
 
 - Cloud Formation
 - Bootstrap Script

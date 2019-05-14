@@ -9,8 +9,17 @@ https://github.com/terrywbrady/info
 
 ## Goal
 - [DSpace](https://dspace.org) is an open-source repository platform used by academic libraries and other institutions.
++++
+
+## Goal
 - Many institutions have very limited developer support.  End users within these institutions have expertise to offer to the project.
++++
+
+## Goal
 - Ths project will build an automated system to build an deploy a test instance of DSpace using code from a specific [pull request](https://github.com/DSpace/DSpace/pulls).
++++
+
+## Goal
 - The system will carefully manage deployed instances in order to control costs.
 
 +++?video=https://www.youtube.com/embed/lQp_G9A9uL0

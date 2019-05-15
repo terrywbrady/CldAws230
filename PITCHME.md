@@ -60,13 +60,21 @@ The system will carefully manage deployed instances in order to control costs.
 
 +++
 
+## Security - Potential Enhancements
+
+- Web resources
+- Lambdas
+- CORS Headers
+- EC2 Ports
+
++++
 ## Security - Public Web Resources
 
 - EC2 resources will be publicly accessible (for end users)
   - The dashboard will make test resources accessible
 - Lambdas will be publicly accessible
-  - The StartInstance lambda could trigger a costly resources
-  - Perhaps some additional verification could be added here
+  - The StartInstance lambda can trigger costs
+  - Consider limiting access to this resource
 
 +++
 
@@ -75,6 +83,9 @@ The system will carefully manage deployed instances in order to control costs.
 +++
 
 ## Security - EC2 Ports
+- Ports in use
+  - DSpace 6: 8080, 3030
+  - DSpace 7: 8080, 3030, 3000, 8983
 - The ports on the running DSpace instances could be more carefully restricted
 
 +++
@@ -97,10 +108,18 @@ The system will carefully manage deployed instances in order to control costs.
 +++
 ## A Quick Preview of DSpace
 
+- Navigate to an item
+- Items can contain digital media
+
 +++?image=presentation/dspace.gif
 
 +++
 ## DSpace Instance Manager Dashboard
+
+- Select a DSpace PR
+  - Launch instance
+- Select a DSpace branch
+  - Launch instance
 
 +++?image=presentation/dashboard.gif
 
@@ -120,6 +139,8 @@ The system will carefully manage deployed instances in order to control costs.
 
 +++
 ### Choose Instance from dashboard
+- Choose instance without PR changes
+- Choose instance with PR changes
 
 +++?image=presentation/dashboard2.gif
 

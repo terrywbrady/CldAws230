@@ -1,1 +1,6 @@
 theme: jekyll-theme-cayman
+title: DSpace Launcher Dashboard
+description: "Deploy a DSpace PR in Docker on AWS for Testing"
+baseurl: "/CldAws230"
+url: "http://terrywbrady.github.io/CldAws230"
+show_downloads: false

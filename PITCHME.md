@@ -16,7 +16,7 @@ Many institutions have very limited developer support.  End users within these i
 +++
 
 ## Goal
-Ths project will build an automated system to build an deploy a test instance of DSpace using code from a specific [pull request](https://github.com/DSpace/DSpace/pulls).
+This project will build an automated system to build an deploy a test instance of DSpace using code from a specific [pull request](https://github.com/DSpace/DSpace/pulls).
 +++
 
 ## Goal
@@ -133,7 +133,7 @@ The system will carefully manage deployed instances in order to control costs.
 
 ## Additional Functionality
 
-- Make EC2/Docker startup logs accessible 
+- Make EC2/Docker startup logs accessible
   - Flask on server OR use Kinesis
 - Post incremental status updates during startup process
   - Use tag api

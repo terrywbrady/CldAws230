@@ -1,3 +1,5 @@
+![Overview](presentation/CldAws230-Drawing.jpg)
+
 # DSpace Launcher Dashboard - Deploy a DSpace PR in Docker on AWS for Testing
 
 DSpace is an open-source repository platform used by academic libraries and other institutions.
@@ -8,10 +10,6 @@ The system will carefully manage deployed instances in order to control costs.
 ## Class Presentation
 
 - [Presentation Slides](https://gitpitch.com/terrywbrady/CldAws230)
-
-## Overview
-
-![Overview](presentation/CldAws230-Drawing.jpg)
 
 ## Demonstration Video
 

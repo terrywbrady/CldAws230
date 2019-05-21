@@ -131,7 +131,7 @@ def getTags(pr, branch, title):
 def getUserData(pr, branch):
     ver = " -f d7.override.yml"
     if branch == "master":
-      ver = " -f d7.override.yml"
+      ver = " -f d7.override.yml -f load.entities.yml"
     elif branch == "preview":
       ver = " -f d7.override.yml -f d7.preview.yml -f load.entities.yml"
     elif branch == "dspace-6_x":
@@ -142,9 +142,11 @@ def getUserData(pr, branch):
       ver = " -f d4.override.yml"
 
     commands = [
+        "cd /home/ec2-user/DSpace-Docker-Images",
         "DNS=`curl -s http://169.254.169.254/latest/meta-data/public-hostname`",
-        "export BASEROOT=http://${DNS}",
-        "sed -i -e s/localhost/${DNS}/"
+        "echo DNS=${DNS}",
+        "export BASEROOT=http://${DNS}:8080",
+        "sed -i -e s/localhost/${DNS}/ add-ons/angular-tools/environment.dev.js"
     ]
     if (pr != ""):
         commands = [

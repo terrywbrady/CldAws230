@@ -29,7 +29,7 @@ TZONE            = dateutil.tz.gettz('US/Pacific')
 UPTIME           = getSSMParam("DSPACE_DASHBOARD.UPTIME", "60")
 INSTTYPE         = getSSMParam("DSPACE_DASHBOARD.INSTANCE_TYPE", "t2.xlarge")
 AMI              = getSSMParam("DSPACE_DASHBOARD.AMI", "ami-01861f340864168b2")
-
+KEYNAME          = getSSMParam("DSPACE_DASHBOARD.KEYNAME", "week8key")
 
 # =====================================================
 # Get Instances
@@ -183,7 +183,7 @@ def startInstance(pr, branch, title):
         ImageId=AMI,
         InstanceType=INSTTYPE,
         UserData=getUserData(pr, branch),
-        KeyName='week8key'
+        KeyName=KEYNAME
     )
     ids=[]
     for instance in instances['Instances']:

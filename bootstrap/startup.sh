@@ -24,4 +24,4 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-
 sudo chmod 755 /usr/local/bin/docker-compose
 
 # Clone DSpace-Docker-Images
-sudo su -l ec2-user -c "cd;git clone https://github.com/DSpace-Labs/DSpace-Docker-Images.git;cd DSpace-Docker-Images/docker-compose-files/dspace-compose;docker-compose -p d6 -f docker-compose.yml -f d6.override.yml up -d"
+sudo su -l ec2-user -c "cd;git clone https://github.com/DSpace-Labs/DSpace-Docker-Images.git;cd DSpace-Docker-Images/docker-compose-files/dspace-compose;docker-compose -f docker-compose.yml -f d6.override.yml pull;docker-compose -f docker-compose.yml -f d7.override.yml pull;"

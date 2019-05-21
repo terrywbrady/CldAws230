@@ -28,7 +28,8 @@ REGION           = 'us-west-2'
 TZONE            = dateutil.tz.gettz('US/Pacific')
 UPTIME           = getSSMParam("DSPACE_DASHBOARD.UPTIME", "60")
 INSTTYPE         = getSSMParam("DSPACE_DASHBOARD.INSTANCE_TYPE", "t2.xlarge")
-
+AMI              = getSSMParam("DSPACE_DASHBOARD.AMI", "ami-01861f340864168b2")
+KEYNAME          = getSSMParam("DSPACE_DASHBOARD.KEYNAME", "week8key")
 
 # =====================================================
 # Get Instances
@@ -42,16 +43,16 @@ def lambda_getInstances(event, context):
         'headers': { 'Access-Control-Allow-Origin': '*'},
         'body': json.dumps(getInstanceJsonObjects())
     }
-    
+
 def getInstanceObjects():
     fres = []
-    for instance in getInstances(): 
+    for instance in getInstances():
         fres.append(makeObj(instance))
     return fres
 
 def getInstanceJsonObjects():
     json = []
-    for instance in getInstances(): 
+    for instance in getInstances():
         obj = makeObj(instance)
         obj['launchTime'] = str(obj['launchTime'].astimezone(TZONE)) + " PT"
         obj['endTime'] = str(obj['endTime'].astimezone(TZONE)) + " PT"
@@ -61,30 +62,30 @@ def getInstanceJsonObjects():
 def makeObj(instance):
     tags = instance['Tags']
     uptime = int(getTagVal(tags, "UPTIME", UPTIME))
-    
+
     dstart = instance['LaunchTime']
     dend = dstart + datetime.timedelta(minutes=uptime)
     branch = getTagVal(tags, 'Branch', "")
     services = []
     if branch == "master" or branch == "preview":
         services.append({
-            "name":"rest", 
+            "name":"rest",
             "path":":8080/spring-rest"
         })
         services.append({
-            "name":"angular", 
+            "name":"angular",
             "path":":3000"
         })
     elif branch == "dspace-6_x" or branch == "dspace-5_x" or branch == "dspace-4_x":
         services.append({
-            "name":"xmlui", 
+            "name":"xmlui",
             "path":":8080/xmlui"
         })
         services.append({
-            "name":"jspui", 
+            "name":"jspui",
             "path":":8080/jspui"
         })
-    return { 
+    return {
         'found': 1,
         'name': getTagVal(tags, 'Name', ""),
         'branch': branch,
@@ -97,14 +98,10 @@ def makeObj(instance):
         'logs': 'tbd',
         'services': services
     }
-    
+
 # =====================================================
 # Start Instances
 # =====================================================
-
-# TODO: Make this smarter - find the source image by tag name
-def getAmi():
-    return "ami-01861f340864168b2" #dspace-source
 
 def getTags(pr, branch, title):
     return [
@@ -114,7 +111,7 @@ def getTags(pr, branch, title):
         },
         {
             'Key':'Name',
-            'Value': title 
+            'Value': title
         },
         {
             'Key':'UPTIME',
@@ -134,7 +131,7 @@ def getTags(pr, branch, title):
 def getUserData(pr, branch):
     ver = " -f d7.override.yml"
     if branch == "master":
-      ver = " -f d7.override.yml"
+      ver = " -f d7.override.yml -f load.entities.yml"
     elif branch == "preview":
       ver = " -f d7.override.yml -f d7.preview.yml -f load.entities.yml"
     elif branch == "dspace-6_x":
@@ -145,6 +142,11 @@ def getUserData(pr, branch):
       ver = " -f d4.override.yml"
 
     commands = [
+        "cd /home/ec2-user/DSpace-Docker-Images",
+        "DNS=`curl -s http://169.254.169.254/latest/meta-data/public-hostname`",
+        "echo DNS=${DNS}",
+        "export BASEROOT=http://${DNS}:8080",
+        "sed -i -e s/localhost/${DNS}/ add-ons/angular-tools/environment.dev.js"
     ]
     if (pr != ""):
         commands = [
@@ -157,15 +159,17 @@ def getUserData(pr, branch):
             "curl -o /tmp/pr.patch -L https://github.com/DSpace/DSpace/pull/" + pr + ".diff",
             "git apply /tmp/pr.patch",
         ]
-        
+
     commands.append("cd /home/ec2-user/DSpace-Docker-Images")
     commands.append("git pull origin")
     commands.append("cd docker-compose-files/dspace-compose")
 
     if (pr != ""):
         commands.append("docker-compose -p dspace -f docker-compose.yml " + ver + " -f src.override.yml build")
+        commands.append("docker-compose -p dspace -f docker-compose.yml " + ver + " -f src.override.yml pull")
         commands.append("docker-compose -p dspace -f docker-compose.yml " + ver + " -f src.override.yml up -d")
     else:
+        commands.append("docker-compose -p dspace -f docker-compose.yml " + ver + " pull")
         commands.append("docker-compose -p dspace -f docker-compose.yml " + ver + " up -d")
 
     return "#!/bin/bash\nsudo su -l ec2-user -c '" + ";".join(commands) + "'"
@@ -178,10 +182,10 @@ def startInstance(pr, branch, title):
     instances = ec2.run_instances(
         MaxCount=1,
         MinCount=1,
-        ImageId=getAmi(),
+        ImageId=AMI,
         InstanceType=INSTTYPE,
         UserData=getUserData(pr, branch),
-        KeyName='week8key'
+        KeyName=KEYNAME
     )
     ids=[]
     for instance in instances['Instances']:
@@ -225,7 +229,7 @@ def lambda_stopInstances(event, context):
         'headers': { 'Access-Control-Allow-Origin': '*'},
         'body': json.dumps(ids)
     }
-    
+
 def stopInstances():
     objarr = getInstanceObjects()
     ids = getObjIds(objarr)
@@ -290,16 +294,16 @@ def getReservations():
             },
         ]
     )
-    
+
 def getInstances():
     instances = []
     for res in getKey(getReservations(), 'Reservations', []):
-        for instance in getKey(res, 'Instances', []): 
+        for instance in getKey(res, 'Instances', []):
             instances.append(instance)
     return instances
-    
+
 def getKey(dictname, name, value):
-    return dictname[name] if name in dictname else value 
+    return dictname[name] if name in dictname else value
 
 def getTagVal(tags, name, value):
     for tag in tags:
@@ -311,21 +315,21 @@ def getObjIds(objarr):
     ids=[]
     for obj in objarr:
         ids.append(obj['id'])
-    return ids    
-    
+    return ids
+
 def getObjIdsByVal(objarr, val):
     ids=[]
     for obj in objarr:
         if obj['id'] == val:
             ids.append(val)
-    return ids    
+    return ids
 
 def getObjIdsByDate(objarr):
     ids=[]
     for obj in objarr:
         if obj['endTime'] < datetime.datetime.now(dateutil.tz.UTC):
             ids.append(obj['id'])
-    return ids    
+    return ids
 
 
 # =====================================================
@@ -341,7 +345,7 @@ def printObj(obj):
 def doCommandLine():
     if len(sys.argv)== 0:
         return
-    
+
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     opt = sys.argv[2] if len(sys.argv) > 2 else ""
     opt2 = sys.argv[3] if len(sys.argv) > 3 else ""
@@ -365,9 +369,9 @@ def doCommandLine():
     elif (cmd == "userdata"):
         print getUserData(opt, opt2)
     else:
-        print "list instances: " + str(datetime.datetime.now(TZONE)) 
+        print "list instances: " + str(datetime.datetime.now(TZONE))
         for obj in getInstanceObjects():
             printObj(obj)
-        
+
 # if testing from Cloud9, rather than Lambda, process command line
 doCommandLine()

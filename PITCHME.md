@@ -168,14 +168,6 @@ The system will carefully manage deployed instances in order to control costs.
 - Make logs accessible
 - Security enhancments (see earlier slide)
 - Regional deployment
-- Find AMI by tag rather than hard-coding
-
-+++
-
-## AWS Operations - Development
-
-- Automate Lambda Deployment
-- Automate S3 Web Resource Deployment
 
 +++
 
@@ -193,6 +185,7 @@ _Time will not likely permit this level of detail._
 - Cloud Formation
 - Bootstrap Script
 - Lambda Permissions
+- Deployment Process
 - Lambda Instances
 - Lambda GitHub API
 - Webapp JavaSciprt
@@ -224,26 +217,34 @@ _Time will not likely permit this level of detail._
 @[17-24](EC2 Operations Performed by Lambda)
 
 +++
+#### Simple Deployment Process
+
++++?code=cloud9build.sh
+@[1-6](Prep Resources)
+@[7-13](Deploy to S3)
+@[15-20](Deploy to Lambda)
+
++++
 #### Lambda Instances
 
 +++?code=lambda/getInstances.py
 @[9-18](Read SSM Stored Parameters)
-@[20-30](Read SSM Stored Parameters)
-@[39-44](Get Instances Lambda -> ec2.describe_instances)
-@[109-119](Create Tags)
-@[120-131](Create Tags)
-@[133-142](Inject UserData)
+@[20-32](Read SSM Stored Parameters)
+@[40-45](Get Instances Lambda -> ec2.describe_instances)
+@[106-119](Create Tags)
+@[120-128](Create Tags)
+@[131-142](Inject UserData)
 @[143-152](Inject UserData)
 @[153-162](Inject UserData)
-@[163-171](Inject UserData)
-@[192-193](Check that running instances does not exceed max allowed)
-@[195-206](Start Instance Lambda -> ec2.run_instances)
-@[238-246](Stop Instance Lambda -> ec2.terminate_instances)
-@[257-263](Stop Overtime Instance Lambda -- Cloud Watch Rule)
-@[280-292](Filter Running Instances)
-@[341-350](CLI testing interface)
-@[351-360](CLI testing interface)
-@[361-370](CLI testing interface)
+@[163-175](Inject UserData)
+@[196-197](Check that running instances does not exceed max allowed)
+@[199-210](Start Instance Lambda -> ec2.run_instances)
+@[242-250](Stop Instance Lambda -> ec2.terminate_instances)
+@[261-267](Stop Overtime Instance Lambda -- Cloud Watch Rule)
+@[284-296](Filter Running Instances)
+@[345-355](CLI testing interface)
+@[355-364](CLI testing interface)
+@[365-374](CLI testing interface)
 
 +++
 #### Lambda GitHub API

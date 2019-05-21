@@ -46,6 +46,14 @@ def lambda_handler(event, context):
         'body': json.dumps(prs)
     }
 
+def test_handler(event, context):
+    prs = [1,2,3,4]
+    return {
+        'statusCode': 200,
+        'headers': { 'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps(prs)
+    }
+
 prs=getPRs()
 for pr in getPRs():
     print pr['prnum']+" "+pr['base'] +"\t" + pr['title']

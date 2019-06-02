@@ -16,7 +16,7 @@ Many institutions have very limited developer support.  End users within these i
 +++
 
 ## Goal
-This project will build an automated system to build an deploy a test instance of DSpace using code from a specific [pull request](https://github.com/DSpace/DSpace/pulls).
+This project will build an automated system to build and deploy a test instance of DSpace using code from a specific [pull request](https://github.com/DSpace/DSpace/pulls).
 +++
 
 ## Goal
@@ -87,13 +87,6 @@ The system will carefully manage deployed instances in order to control costs.
   - DSpace 6: 8080, 3030
   - DSpace 7: 8080, 3030, 3000, 8983
 - The ports on the running DSpace instances could be more carefully restricted
-
-+++
-
-## Security - Keyfile
-
-- A specifically named keyfile is specified on startup.  
-- While the file is not exposed, a more elegant approach is needed
 
 ---
 

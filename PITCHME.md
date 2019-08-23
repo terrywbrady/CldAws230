@@ -221,23 +221,19 @@ _Time will not likely permit this level of detail._
 #### Lambda Instances
 
 +++?code=lambda/getInstances.py
-@[9-18](Read SSM Stored Parameters)
-@[20-32](Read SSM Stored Parameters)
-@[40-45](Get Instances Lambda -> ec2.describe_instances)
-@[106-119](Create Tags)
-@[120-128](Create Tags)
-@[131-142](Inject UserData)
-@[143-152](Inject UserData)
-@[153-162](Inject UserData)
-@[163-175](Inject UserData)
-@[196-197](Check that running instances does not exceed max allowed)
-@[199-210](Start Instance Lambda -> ec2.run_instances)
-@[242-250](Stop Instance Lambda -> ec2.terminate_instances)
-@[261-267](Stop Overtime Instance Lambda -- Cloud Watch Rule)
-@[284-296](Filter Running Instances)
-@[345-355](CLI testing interface)
-@[355-364](CLI testing interface)
-@[365-374](CLI testing interface)
+@[16-28](Read SSM Stored Parameters)
+@[36-42](Read SSM Stored Parameters)
+@[50-55](Get Instances Lambda -> ec2.describe_instances)
+@[123-145](Create EC2 Tags)
+@[153-164](Construct EC2 UserData - docker compose)
+@[166-172](UserData - Set Environment)
+@[173-183](UserData - Clone DSpace Code for PR)
+@[185-195](UserData - Clone Docker Compose Files)
+@[220-222](Check that running instances does not exceed max allowed)
+@[202-218](Start Instance Lambda -> ec2.run_instances)
+@[280-285](Stop Instance Lambda -> ec2.terminate_instances)
+@[298-303](Stop Overtime Instance Lambda -- Cloud Watch Rule)
+@[314-326](Filter Running Instances)
 
 +++
 #### Lambda GitHub API

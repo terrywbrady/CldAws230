@@ -1,6 +1,6 @@
 ![Overview](presentation/CldAws230-Drawing.jpg)
 
-The materials in this repository were the deliverables for the Cloud Application Development on Amazon Web Services certificate program at the University of Washington.
+The materials in this repository were the deliverables for the [Cloud Application Development on Amazon Web Services](https://www.pce.uw.edu/certificates/cloud-application-development-on-aws) certificate program at the University of Washington.
 
 The materials in the repository are also designed to propose a testing framework for the DSpace community that will simplify the process of testing DSpace code branches and DSpace pull requests.
 

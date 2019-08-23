@@ -197,7 +197,7 @@ _Time will not likely permit this level of detail._
 +++
 #### Bootstrap Script for EC2 that will become an AMI
 
-+++?code=bootstrap/startup.shlang=Bash
++++?code=bootstrap/startup.sh&lang=Bash
 
 @[4-7](Install Java)
 @[8-9](Install Git)

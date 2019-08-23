@@ -1,5 +1,9 @@
 // API_BASE will be set in dspaceLauncher.init.js
 var PRS;
+
+/*
+Refresh the DSpace dashboard
+*/
 $(document).ready(function(){
   $("#refresh").on("click", function(){refresh();});
   refresh();
@@ -10,6 +14,9 @@ $(document).ready(function(){
     });
 });
 
+/*
+Get the list of running DSpace instances and present as a table
+*/
 function refresh() {
   $.getJSON(API_BASE+"/projListInstances", function(data){
     if (data == null) return;
@@ -45,10 +52,18 @@ function refresh() {
         .append(tddns)
         .append($("<td/>").text(obj['endTime']));
     }
+
+    /*
+    TODO - the maximum number of instances should be pulled from AWS SSM
+    rather than hard coding.
+    */
     $("#startInstance").attr("disabled", (data.length >= 2));
   });
 }
 
+/*
+Call the Get PRs lambda and update a select widget with the values
+*/
 function loadPRs() {
   $.getJSON(API_BASE+"/projgetprs", function(data){
     if (data == null) return;
@@ -65,12 +80,18 @@ function loadPRs() {
   });
 }
 
+/*
+Call stop instance lambda
+*/
 function stopInstance(id) {
   $.getJSON(API_BASE+"/projstopinstances?id="+id, function(data){
     setTimeout(refresh(), 2000);
   });
 }
 
+/*
+Call start instance lambdaPerms
+*/
 function startInstance(){
   $("#startInstance").attr("disabled", true);
   var data = {}

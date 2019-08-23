@@ -239,22 +239,21 @@ _Time will not likely permit this level of detail._
 #### Lambda GitHub API
 
 +++?code=lambda/getPRs.py
-@[25-39](Call GitHub API)
-@[41-47](Get PRs Lambda)
-@[49-51](CLI Tester)
+@[17-40](Call GitHub API)
+@[42-49](Get PRs Lambda)
+@[60-63](CLI Tester)
 
 +++
 #### Webapp JavaSciprt
 
 +++?code=web/dspaceLauncher.js
-@[3-11](Load Resources)
-@[14-23](Call Get Instances Lambda)
-@[44-33](Call Get Instances Lambda)
-@[34-43](Call Get Instances Lambda)
-@[44-49](Call Get Instances Lambda)
-@[53-65](Call Get PRs Lambda)
-@[69-71](Call Stop Instance Lambda)
-@[75-94](Call Start Instance Lambda)
+@[7-15](Load Resources)
+@[20-26](Call Get Instances Lambda)
+@[35-44](Create stop button)
+@[46-54](Show table)
+@[67-81](Call Get PRs Lambda)
+@[86-90](Call Stop Instance Lambda)
+@[95-115](Call Start Instance Lambda)
 
 ---
 

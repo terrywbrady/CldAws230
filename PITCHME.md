@@ -220,7 +220,7 @@ _Time will not likely permit this level of detail._
 +++
 #### Lambda Instances
 
-+++?code=lambda/getInstances.py
++++?code=lambda/getInstances.py&lang=Python
 @[9-18](Read SSM Stored Parameters)
 @[20-32](Read SSM Stored Parameters)
 @[40-45](Get Instances Lambda -> ec2.describe_instances)

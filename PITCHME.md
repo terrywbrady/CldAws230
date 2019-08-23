@@ -213,9 +213,9 @@ _Time will not likely permit this level of detail._
 #### Simple Deployment Process
 
 +++?code=cloud9build.sh
-@[1-6](Prep Resources)
-@[7-13](Deploy to S3)
-@[15-20](Deploy to Lambda)
+@[10-17](Prep Resources)
+@[19-23](Deploy to S3)
+@[26-31](Deploy to Lambda)
 
 +++
 #### Lambda Instances

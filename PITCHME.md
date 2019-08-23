@@ -187,6 +187,7 @@ _Time will not likely permit this level of detail._
 #### Cloud Formation to Create AMI
 
 +++?code=bootstrap/ec2-cloudformation.json
+
 @[3-7](URL Parameter for startup script)
 @[8-21](Other Parameters)
 @[29-32](Image Type and Key Name Parameter Ref)
@@ -197,6 +198,7 @@ _Time will not likely permit this level of detail._
 #### Bootstrap Script for EC2 that will become an AMI
 
 +++?code=bootstrap/startup.sh
+
 @[4-7](Install Java)
 @[8-9](Install Git)
 @[11-18](Install Docker)
@@ -213,6 +215,7 @@ _Time will not likely permit this level of detail._
 #### Simple Deployment Process
 
 +++?code=cloud9build.sh
+
 @[1-6](Prep Resources)
 @[7-13](Deploy to S3)
 @[15-20](Deploy to Lambda)
@@ -221,6 +224,7 @@ _Time will not likely permit this level of detail._
 #### Lambda Instances
 
 +++?code=lambda/getInstances.py&lang=Python
+
 @[9-18](Read SSM Stored Parameters)
 @[20-32](Read SSM Stored Parameters)
 @[40-45](Get Instances Lambda -> ec2.describe_instances)
@@ -243,6 +247,7 @@ _Time will not likely permit this level of detail._
 #### Lambda GitHub API
 
 +++?code=lambda/getPRs.py
+
 @[25-39](Call GitHub API)
 @[41-47](Get PRs Lambda)
 @[49-51](CLI Tester)
@@ -251,6 +256,7 @@ _Time will not likely permit this level of detail._
 #### Webapp JavaSciprt
 
 +++?code=web/dspaceLauncher.js
+
 @[3-11](Load Resources)
 @[14-23](Call Get Instances Lambda)
 @[44-33](Call Get Instances Lambda)

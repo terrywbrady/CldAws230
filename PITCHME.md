@@ -210,8 +210,6 @@ _Time will not likely permit this level of detail._
 
 +++?code=lambda/lambdaPerms.json&lang=JSON
 
-@[17-24](EC2 Operations Performed by Lambda)
-
 +++
 #### Simple Deployment Process
 

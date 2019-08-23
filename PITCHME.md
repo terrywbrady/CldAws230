@@ -217,10 +217,6 @@ _Time will not likely permit this level of detail._
 
 +++?code=cloud9build.sh&lang=Bash
 
-@[1-6](Prep Resources)
-@[7-13](Deploy to S3)
-@[15-20](Deploy to Lambda)
-
 +++
 #### Lambda Instances
 

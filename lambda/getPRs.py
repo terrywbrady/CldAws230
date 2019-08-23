@@ -13,9 +13,10 @@ import urllib2
 import json
 import re
 
+# Grab the first 2 pages of DSpace Pull Requests using the GitHub API
 def getPRs():
     prs = []
-    
+
     for branch in ['master', 'preview','dspace-6_x','dspace-5_x','dspace-4_x']:
         prs.append({
             'prnum': '',
@@ -27,7 +28,7 @@ def getPRs():
         req.add_header('accept', 'application/json')
         response = urllib2.urlopen(req)
         jsondata = json.load(response)
-    
+
         for pr in jsondata:
             match = re.match(r".*/(\d+)$", pr['url'])
             prnum = match.group(1) if match else ""
@@ -38,6 +39,7 @@ def getPRs():
             })
     return prs
 
+# Lambda Handler wrpping getPRs()
 def lambda_handler(event, context):
     prs = getPRs()
     return {
@@ -46,6 +48,7 @@ def lambda_handler(event, context):
         'body': json.dumps(prs)
     }
 
+# Testing function
 def test_handler(event, context):
     prs = [1,2,3,4]
     return {
@@ -54,6 +57,7 @@ def test_handler(event, context):
         'body': json.dumps(prs)
     }
 
+# CLI interface for testing the lambda code
 prs=getPRs()
 for pr in getPRs():
     print pr['prnum']+" "+pr['base'] +"\t" + pr['title']

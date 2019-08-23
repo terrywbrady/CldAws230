@@ -1,4 +1,11 @@
 # Source: https://github.com/terrywbrady/CldAws230/blob/project/lambda/getInstances.py
+#
+# This code is used by the DSpace Launcher Dashboard Application.  This code is deployed as 4 separate Lambdas.
+# - projListInstances  - list EC2 instances started by the DSpace Launcher Dashboard
+# - projStopInstance   - manually stop an EC2 instance started by the DSpace Launcher Dashboard
+# - projCreateInstance - start a new EC2 instance that will run DSpace using Docker Compose
+# - projTimer          - kill a DSpace EC2 instance that has exceeded its allotted uptime (cost management)
+
 import boto3
 import json
 import sys
@@ -8,6 +15,9 @@ import datetime
 
 # =====================================================
 # AWS System Manager Parameter Store
+#
+# The parameter store is designed to throttle the costs associated with the
+# resources launched from the dashboard without needing to redeploy code.
 # =====================================================
 ssm = boto3.client('ssm', region_name="us-west-2")
 def getSSMParam(key, value):
@@ -32,7 +42,7 @@ AMI              = getSSMParam("DSPACE_DASHBOARD.AMI", "ami-01861f340864168b2")
 KEYNAME          = getSSMParam("DSPACE_DASHBOARD.KEYNAME", "week8key")
 
 # =====================================================
-# Get Instances
+# Get Instances started from the DSpace Launcher dashboard
 # =====================================================
 
 # Lambda invoked from web form via API gateway
@@ -44,12 +54,15 @@ def lambda_getInstances(event, context):
         'body': json.dumps(getInstanceJsonObjects())
     }
 
+# Get a list of EC2 instances launched from the dashboard.
+# Return the list of instances as dashboard objects
 def getInstanceObjects():
     fres = []
     for instance in getInstances():
         fres.append(makeObj(instance))
     return fres
 
+# Return the set of running DSpace instances as a json result
 def getInstanceJsonObjects():
     json = []
     for instance in getInstances():
@@ -59,6 +72,9 @@ def getInstanceJsonObjects():
         json.append(obj)
     return json
 
+# Make a DSpace Dashboard Object from and EC2 instance.
+# Read the EC2 tags to determine the start time, end time, branch, and PR for the instance.
+# The services associated with an instance will vary based on the DSpace branch that was started.
 def makeObj(instance):
     tags = instance['Tags']
     uptime = int(getTagVal(tags, "UPTIME", UPTIME))
@@ -103,6 +119,7 @@ def makeObj(instance):
 # Start Instances
 # =====================================================
 
+# Get a set of EC2 tags for a PR and branch
 def getTags(pr, branch, title):
     return [
         {
@@ -127,7 +144,12 @@ def getTags(pr, branch, title):
         }
     ]
 
-# TODO: read context from instance
+# Based on the Branch and PR to be started, construct the the bootstrap script that will
+# launch Docker Compose.
+# See https://github.com/DSpace-Labs/DSpace-Docker-images for an explanation of the
+# DSpace Docker Compose Options.
+# If DSpace were to pre-build docker images for every active pull request, the bootstrap logic
+# could be simplified.
 def getUserData(pr, branch):
     ver = " -f d7.override.yml"
     if branch == "master":
@@ -174,7 +196,9 @@ def getUserData(pr, branch):
 
     return "#!/bin/bash\nsudo su -l ec2-user -c '" + ";".join(commands) + "'"
 
-# TODO: Take Parameters
+# Start and EC2 instance that will run a specific branch/pull request for DSpace.
+# Set the EC2 tags to convey dashboard metadata for the instance.
+# Set the userdata for the EC2 instance to bootstrap the call to docker-compose up
 def startInstance(pr, branch, title):
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.ServiceResource.create_instances
     # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
@@ -193,9 +217,11 @@ def startInstance(pr, branch, title):
     ec2.create_tags(Resources=ids,Tags=getTags(pr, branch, title))
     return ids
 
+# Verify that the number of DSpace instances does not exceed the maiximum allowed by the dashbaord
 def checkRunningInstances():
     return len(getInstanceObjects()) < MAX_INSTANCE
 
+# API Gateway interface for the lambda that starts an instance
 def lambda_startInstances(event, context):
     body = json.loads(event['body'])
     pr = body['prnum']
@@ -220,7 +246,7 @@ def lambda_startInstances(event, context):
 # Stop Instances
 # =====================================================
 
-# Lambda invoked from web form via API gateway
+# Lambda invoked from web form via API gateway to stop all running instances
 # --------------------------------------------
 def lambda_stopInstances(event, context):
     ids = stopInstances()
@@ -230,6 +256,7 @@ def lambda_stopInstances(event, context):
         'body': json.dumps(ids)
     }
 
+# Stop all DSpace instances started from the dashboard
 def stopInstances():
     objarr = getInstanceObjects()
     ids = getObjIds(objarr)
@@ -237,7 +264,7 @@ def stopInstances():
         ec2 = getEC2().terminate_instances(InstanceIds=ids)
     return ids
 
-# Lambda invoked from web form via API gateway
+# Lambda invoked from web form via API gateway to stop a specific instance
 # --------------------------------------------
 def lambda_stopInstance(event, context):
     qp = event["queryStringParameters"] if 'queryStringParameters' in event else {}
@@ -249,6 +276,7 @@ def lambda_stopInstance(event, context):
         'body': json.dumps(ids)
     }
 
+# Stop a specific DSpace instance
 def stopInstance(id):
     objarr = getInstanceObjects()
     ids = getObjIdsByVal(objarr, id)
@@ -256,7 +284,7 @@ def stopInstance(id):
         ec2 = getEC2().terminate_instances(InstanceIds=ids)
     return ids
 
-# Lambda invoked by cron/schedule - will run every 5 min
+# Lambda invoked by cron/schedule - will run every 5 min to stop instnaces beyond their allotted time
 # ------------------------------------------------------
 def lambda_stopOvertimeInstances(event, context):
     ids = stopOvertimeInstances()
@@ -266,6 +294,7 @@ def lambda_stopOvertimeInstances(event, context):
         'body': json.dumps(ids)
     }
 
+# Stop any DSpace instance over its allotted time
 def stopOvertimeInstances():
     objarr = getInstanceObjects()
     ids = getObjIdsByDate(objarr)
@@ -281,6 +310,7 @@ def stopOvertimeInstances():
 def getEC2():
     return boto3.client('ec2', region_name=REGION)
 
+# Filter EC2 Reservations instances by tags to find instances started from the dashboard
 def getReservations():
     return getEC2().describe_instances(
         Filters=[
@@ -295,6 +325,7 @@ def getReservations():
         ]
     )
 
+# get istances for AWS reservations that match a set of criteria
 def getInstances():
     instances = []
     for res in getKey(getReservations(), 'Reservations', []):
@@ -302,21 +333,25 @@ def getInstances():
             instances.append(instance)
     return instances
 
+# Helper method for locating an EC2 tag from a python dictionary
 def getKey(dictname, name, value):
     return dictname[name] if name in dictname else value
 
+# Retrieve an EC2 tag value or a default if the value is not defined
 def getTagVal(tags, name, value):
     for tag in tags:
         if (getKey(tag, 'Key', "") == name):
             return getKey(tag, 'Value', value)
     return value
 
+# Create an array of AWS object ids from an array of AWS objects
 def getObjIds(objarr):
     ids=[]
     for obj in objarr:
         ids.append(obj['id'])
     return ids
 
+# Create an array of AWS objects ids searching a list of objects for a specific value
 def getObjIdsByVal(objarr, val):
     ids=[]
     for obj in objarr:
@@ -324,6 +359,7 @@ def getObjIdsByVal(objarr, val):
             ids.append(val)
     return ids
 
+# Create an array of AWS objects ids searching a list of objects for a specific date value
 def getObjIdsByDate(objarr):
     ids=[]
     for obj in objarr:
@@ -333,7 +369,7 @@ def getObjIdsByDate(objarr):
 
 
 # =====================================================
-# Testing command line
+# Testing command line - these methods allow testing from AWS Cloud 9 
 # =====================================================
 
 def printObj(obj):

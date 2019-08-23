@@ -213,52 +213,47 @@ _Time will not likely permit this level of detail._
 #### Simple Deployment Process
 
 +++?code=cloud9build.sh
-@[1-6](Prep Resources)
-@[7-13](Deploy to S3)
-@[15-20](Deploy to Lambda)
+@[10-17](Prep Resources)
+@[19-23](Deploy to S3)
+@[26-31](Deploy to Lambda)
 
 +++
 #### Lambda Instances
 
 +++?code=lambda/getInstances.py
-@[9-18](Read SSM Stored Parameters)
-@[20-32](Read SSM Stored Parameters)
-@[40-45](Get Instances Lambda -> ec2.describe_instances)
-@[106-119](Create Tags)
-@[120-128](Create Tags)
-@[131-142](Inject UserData)
-@[143-152](Inject UserData)
-@[153-162](Inject UserData)
-@[163-175](Inject UserData)
-@[196-197](Check that running instances does not exceed max allowed)
-@[199-210](Start Instance Lambda -> ec2.run_instances)
-@[242-250](Stop Instance Lambda -> ec2.terminate_instances)
-@[261-267](Stop Overtime Instance Lambda -- Cloud Watch Rule)
-@[284-296](Filter Running Instances)
-@[345-355](CLI testing interface)
-@[355-364](CLI testing interface)
-@[365-374](CLI testing interface)
+@[16-28](Read SSM Stored Parameters)
+@[36-42](Read SSM Stored Parameters)
+@[50-55](Get Instances Lambda -> ec2.describe_instances)
+@[123-145](Create EC2 Tags)
+@[153-164](Construct EC2 UserData - docker compose)
+@[166-172](UserData - Set Environment)
+@[173-183](UserData - Clone DSpace Code for PR)
+@[185-195](UserData - Clone Docker Compose Files)
+@[220-222](Check that running instances does not exceed max allowed)
+@[202-218](Start Instance Lambda -> ec2.run_instances)
+@[280-285](Stop Instance Lambda -> ec2.terminate_instances)
+@[298-303](Stop Overtime Instance Lambda -- Cloud Watch Rule)
+@[314-326](Filter Running Instances)
 
 +++
 #### Lambda GitHub API
 
 +++?code=lambda/getPRs.py
-@[25-39](Call GitHub API)
-@[41-47](Get PRs Lambda)
-@[49-51](CLI Tester)
+@[17-40](Call GitHub API)
+@[42-49](Get PRs Lambda)
+@[60-63](CLI Tester)
 
 +++
 #### Webapp JavaSciprt
 
 +++?code=web/dspaceLauncher.js
-@[3-11](Load Resources)
-@[14-23](Call Get Instances Lambda)
-@[44-33](Call Get Instances Lambda)
-@[34-43](Call Get Instances Lambda)
-@[44-49](Call Get Instances Lambda)
-@[53-65](Call Get PRs Lambda)
-@[69-71](Call Stop Instance Lambda)
-@[75-94](Call Start Instance Lambda)
+@[7-15](Load Resources)
+@[20-26](Call Get Instances Lambda)
+@[35-44](Create stop button)
+@[46-54](Show table)
+@[67-81](Call Get PRs Lambda)
+@[86-90](Call Stop Instance Lambda)
+@[95-115](Call Start Instance Lambda)
 
 ---
 
